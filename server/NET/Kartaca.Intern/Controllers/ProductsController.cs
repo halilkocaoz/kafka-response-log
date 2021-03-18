@@ -1,9 +1,11 @@
+using Kartaca.Intern.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kartaca.Intern.Controllers
 {
     [ApiController]
     [Route("api/[Controller]")]
+    [Delayer(3000)]
     public class ProductsController : ControllerBase
     {
         [HttpGet]
