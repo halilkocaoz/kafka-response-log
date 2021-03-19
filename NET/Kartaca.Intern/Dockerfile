@@ -9,7 +9,8 @@ RUN dotnet restore ./Kartaca.Intern/Kartaca.Intern.csproj
 # copy everything else and build app
 COPY . ./Kartaca.Intern/
 WORKDIR /source/Kartaca.Intern
-RUN dotnet publish -c release -o /app --no-restore
+RUN dotnet publish --no-restore -c Release -o /app --no-cache /restore
+
 
 # final stage/image
 FROM mcr.microsoft.com/dotnet/aspnet:5.0
