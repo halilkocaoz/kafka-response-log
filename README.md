@@ -22,8 +22,8 @@ Docker compose runs 5 service;
 * X Database (I have not decided what should I use)
 
 ```bash
-docker-compose build
-docker-compose up -d
+docker-compose up build
+docker-compose up build -d
 ```
 
 

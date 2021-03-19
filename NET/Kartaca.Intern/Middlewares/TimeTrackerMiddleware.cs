@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Kartaca.Intern.Models;
+using Kartaca.Intern.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -7,6 +9,7 @@ namespace Kartaca.Intern.Middlewares
 {
     public class TimeTrackerMiddleware
     {
+        private readonly KafkaLogService _kafkaLogService;
         private readonly ILogger _logger;
         private readonly RequestDelegate _next;
 
@@ -17,31 +20,32 @@ namespace Kartaca.Intern.Middlewares
             this is the just one of the conflicts.
         */
 
-        public TimeTrackerMiddleware(ILogger<TimeTrackerMiddleware> logger, RequestDelegate next)
+        public TimeTrackerMiddleware(ILogger<TimeTrackerMiddleware> logger, RequestDelegate next, KafkaLogService kafkaLogService)
         {
             _logger = logger;
             _next = next;
+            _kafkaLogService = kafkaLogService;
         }
 
         public async Task InvokeAsync(HttpContext httpContext)
         {
+
             var stopwatch = new Stopwatch();
-
             stopwatch.Start();
-            _logger.LogInformation($"Start {httpContext.Request.Method} : {httpContext.Request.Path}");
-
             await _next(httpContext);
             stopwatch.Stop();
 
             /* 
-                if the response 404, don't message it because this request could be anything
-                while a consumer try to get result from path which isn't exist 
-                if we take into this response time from the tracker, it break accuracy.
+                if the response 404, don't message it because that request could be anything
+                when a api consumer try to get result from path which isn't exist 
+                if we send this response time to kafka, it break accuracy.
             */
             if (httpContext.Response.StatusCode != 404)
             {
-                // todo: kafka
-                _logger.LogInformation($"End {httpContext.Request.Method} : {httpContext.Request.Path} in {stopwatch.ElapsedMilliseconds} ms");
+                _kafkaLogService.SendAsync(
+                    new ResponseLog(httpContext.Request.Method,
+                    httpContext.Request.Path,
+                    stopwatch.ElapsedMilliseconds));
             }
         }
     }

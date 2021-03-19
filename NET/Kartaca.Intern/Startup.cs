@@ -1,4 +1,5 @@
 using Kartaca.Intern.Middlewares;
+using Kartaca.Intern.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -12,12 +13,16 @@ namespace Kartaca.Intern
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services) => services.AddControllers();
-
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddTransient<KafkaLogService>();
+            services.AddControllers();
+        }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseMiddleware<TimeTrackerMiddleware>();
             
+            app.UseMiddleware<TimeTrackerMiddleware>();
+
             /*  todo: move the docs
                 working steps:
                 take request
