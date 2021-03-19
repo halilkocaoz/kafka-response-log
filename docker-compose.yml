@@ -1,7 +1,16 @@
 version: '3.3'
 
 services:
-
+  web-net:
+    build: ./NET/Kartaca.Intern
+    container_name: kartaca-net-webapi
+    ports:
+      - "1923:80"
+  web-go:
+    build: ./Go
+    container_name: kartaca-go-webapp
+    ports:
+      - "1994:80"
   kartaca-zookeeper:
     image: confluentinc/cp-zookeeper
     container_name: kartaca-zookeeper
