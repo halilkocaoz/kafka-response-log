@@ -29,12 +29,20 @@ namespace Kartaca.Intern.Middlewares
 
             stopwatch.Start();
             _logger.LogInformation($"Start {httpContext.Request.Method} : {httpContext.Request.Path}");
-            // todo: kafka
 
             await _next(httpContext);
-
             stopwatch.Stop();
-            _logger.LogInformation($"End {httpContext.Request.Method} : {httpContext.Request.Path} in {stopwatch.ElapsedMilliseconds} ms");
+
+            /* 
+                if the response 404, don't message it because this request could be anything
+                while a consumer try to get result from path which isn't exist 
+                if we take into this response time from the tracker, it break accuracy.
+            */
+            if (httpContext.Response.StatusCode != 404)
+            {
+                // todo: kafka
+                _logger.LogInformation($"End {httpContext.Request.Method} : {httpContext.Request.Path} in {stopwatch.ElapsedMilliseconds} ms");
+            }
         }
     }
 }

@@ -1,6 +1,0 @@
-# Server
-
-## .NET
-
-## GO
-
