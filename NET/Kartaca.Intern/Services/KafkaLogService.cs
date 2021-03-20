@@ -18,13 +18,11 @@ namespace Kartaca.Intern.Services
 
         public async void SendAsync(ResponseLog responseLog)
         {
-            // todo message create with ctor
-            var messageValue = $"{responseLog.Path} {responseLog.Method} {responseLog.ElapsedTime} {responseLog.Timestamp}";
             using (var producer = new ProducerBuilder<string, string>(producerConfig)
             .SetValueSerializer(Serializers.Utf8)
             .Build())
             {
-                var message = new Message<string, string> { Value = messageValue };
+                var message = new Message<string, string> { Value = responseLog.Message };
                 producer.ProduceAsync(topic, message);
             }
         }
