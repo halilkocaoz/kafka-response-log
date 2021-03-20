@@ -10,7 +10,7 @@ namespace Kartaca.Intern.Models
             Method = method;
             Path = path;
             ElapsedTime = elapsedTime;
-            Message = $"{Method} {ElapsedTime}";
+            Message = $"{Method} {ElapsedTime} {DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
         }
 
         public string Method { get; set; }
