@@ -5,7 +5,7 @@ gAAAAABgUWKB2jyN8QxVQ8s38TQF553f3CFNzWMFlXCGArb40zwz1sQ757-P5dUa2MGSQKIreeC9K8O2
 --->
 
 # kartaca-task
-This repository contains the my solutions of application and service development from Kartaca's tasks with different two programming language.
+This repository contains the my solutions of application and service development from Kartaca's tasks.
 
 ## Table of contents
 * [Setup](#setup)
@@ -14,12 +14,13 @@ This repository contains the my solutions of application and service development
 * [Contact](#contact)
 
 ## Setup
+
 Docker compose runs 5 service;
-* Zookeper
+* Zookeeper
 * Kafka
 * .NET WebAPI
-* Go Web Application
-* X Database (I have not decided what should I use)
+* Go Consumer
+* Database
 
 ```bash
 docker-compose up build
@@ -28,13 +29,14 @@ docker-compose up build -d
 
 
 ## Docs
-* [Kafka](#docs)
-* [.NET](#docs)
-* [Go](#docs)
+
+* [.NET | WebAPI](#docs)
+* [Go | Consumer](#docs)
 * [Database](#docs)
 * [Client](#docs)
 
 ## Techs
+
 * .
 * .
 * .

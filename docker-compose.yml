@@ -7,22 +7,10 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-  
-  web-net:
-    build: ./NET/Kartaca.Intern
-    container_name: kartaca-net-webapi
-    ports:
-      - "1923:80"
 
-  # web-go:
-  #  build: ./Go
-  #  container_name: kartaca-go-webapp
-  #  ports:
-  #    - "1903:80"s
-
-  kartaca-kafka-net:
+  kartaca-kafka:
     image: confluentinc/cp-kafka
-    container_name: kartaca-kafka-net
+    container_name: kartaca-kafka
     depends_on:
       - kartaca-zookeeper
     ports:
@@ -32,24 +20,7 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: kartaca-zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kartaca-kafka-net:9092, CONNECTIONS_FROM_HOST://localhost:19092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONNECTIONS_FROM_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
-      
-  kartaca-kafka-go:
-    image: confluentinc/cp-kafka
-    container_name: kartaca-kafka-go
-    depends_on:
-      - kartaca-zookeeper
-    ports:
-      - "19093:19093"
-    healthcheck:
-      test: "/usr/bin/kafka-topics --list --zookeeper kartaca-zookeeper:2181"
-    environment:
-      KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: kartaca-zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kartaca-kafka-go:9093, CONNECTIONS_FROM_HOST://localhost:19093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kartaca-kafka:9092, CONNECTIONS_FROM_HOST://localhost:19092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONNECTIONS_FROM_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
@@ -57,6 +28,10 @@ services:
   kafka-topics:
     image: confluentinc/cp-kafka
     container_name: kafka-topics
-    command: "bash -c 'echo creating topics && \
-      kafka-topics --bootstrap-server kartaca-kafka-net:9092 --create --topic response_log && \
-      kafka-topics --bootstrap-server kartaca-kafka-go:9093 --create --topic response_log'"
+    command: "bash -c 'echo creating topics && \ kafka-topics --bootstrap-server kartaca-kafka:9092 --create --topic response_log'"
+
+  web-net:
+    build: ./NET/Kartaca.Intern
+    container_name: net-webapi
+    ports:
+      - "1923:80"
