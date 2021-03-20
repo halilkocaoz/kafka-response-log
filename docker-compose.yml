@@ -1,66 +1,62 @@
 version: '3.3'
 
 services:
-  web-net:
-    build: ./NET/Kartaca.Intern
-    container_name: kartaca-net-webapi
-    ports:
-      - "1923:80"
-  web-go:
-    build: ./Go
-    container_name: kartaca-go-webapp
-    ports:
-      - "1903:80"
-  
   kartaca-zookeeper:
     image: confluentinc/cp-zookeeper
     container_name: kartaca-zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+  
+  web-net:
+    build: ./NET/Kartaca.Intern
+    container_name: kartaca-net-webapi
+    ports:
+      - "1923:80"
 
-  ## broker net:
+  # web-go:
+  #  build: ./Go
+  #  container_name: kartaca-go-webapp
+  #  ports:
+  #    - "1903:80"s
+
   kartaca-kafka-net:
     image: confluentinc/cp-kafka
     container_name: kartaca-kafka-net
     depends_on:
       - kartaca-zookeeper
     ports:
-      - 9092:9092
+      - "19092:19092"
     healthcheck:
       test: "/usr/bin/kafka-topics --list --zookeeper kartaca-zookeeper:2181"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: kartaca-zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kartaca-kafka-net:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kartaca-kafka-net:9092, CONNECTIONS_FROM_HOST://localhost:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONNECTIONS_FROM_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
       
-  ## broker go:
   kartaca-kafka-go:
     image: confluentinc/cp-kafka
     container_name: kartaca-kafka-go
     depends_on:
       - kartaca-zookeeper
     ports:
-      - 9093:9093
+      - "19093:19093"
     healthcheck:
       test: "/usr/bin/kafka-topics --list --zookeeper kartaca-zookeeper:2181"
     environment:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: kartaca-zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kartaca-kafka-go:9093
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kartaca-kafka-go:9093, CONNECTIONS_FROM_HOST://localhost:19093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONNECTIONS_FROM_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
   
   kafka-topics:
     image: confluentinc/cp-kafka
     container_name: kafka-topics
-    depends_on:
-      - kartaca-kafka-net
-      - kartaca-kafka-go
     command: "bash -c 'echo creating topics && \
       kafka-topics --bootstrap-server kartaca-kafka-net:9092 --create --topic response_log && \
       kafka-topics --bootstrap-server kartaca-kafka-go:9093 --create --topic response_log'"
