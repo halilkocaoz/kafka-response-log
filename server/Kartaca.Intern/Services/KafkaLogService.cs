@@ -12,7 +12,7 @@ namespace Kartaca.Intern.Services
         { 
             BootstrapServers = server,
             MessageTimeoutMs = 500,
-            Acks = Acks.None // i think we don't need to care all that data, we just need to speed to catch them
+            Acks = Acks.None
         };
 
         public async void SendAsync(ResponseLog responseLog)

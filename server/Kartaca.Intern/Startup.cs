@@ -20,21 +20,8 @@ namespace Kartaca.Intern
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
             app.UseMiddleware<TimeTrackerMiddleware>();
-
-            /*  todo: move the docs
-                working steps:
-                take request
-                TTM
-                DM
-                process the request
-                DM
-                TTM
-            */
-
             app.UseRouting();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
