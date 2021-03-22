@@ -11,7 +11,7 @@ This repository contains the my solutions of application and service development
 * [Setup](#setup)
 * [Docs](#docs)
   - [ASP.NET 5 Web API](#aspnet-5-web-api)
-* [Techs](#techs)
+  - [Go Project : Kafka Consumer and Database Updater](#go-project--kafka-consumer-and-database-updater)
 * [Contact](#contact)
 
 ## Setup
@@ -23,8 +23,13 @@ Docker compose runs 5 service;
 * Go Project : Kafka Consumer and Database Updater 
 * Postgres Database
 
+First time:
 ```bash
-docker-compose up build
+docker-compose up --build
+```
+Afer the first time:
+```bash
+docker-compose up
 ```
 
 ## Docs
@@ -37,7 +42,7 @@ The project has two end-point paths,
 1. /health/api/products [GET]
 2. /api/products   [GET, POST, PUT, DELETE]
 
-### /health/api/products
+### 1. /health/api/products
 This endpoint presents the following data about requests to /api/products in the last hour;
 * HTTP Method
 * Elapsed time to response
@@ -45,13 +50,13 @@ This endpoint presents the following data about requests to /api/products in the
 
 <hr>
 
-#### Using the /health/api/products
+#### 1.1 Using the /health/api/products endpoint
 GET <br>
 `http://localhost:1923/health/api/products`
 
 <hr>
 
-#### 1.2 Returns of GET: /health/api/products
+#### 1.2 Returns of GET: /health/api/products endpoint
 * 204 <br>
 If there is no request that made to `/api/products` in the last hour, you get 204. <br>
 * 200 <br>
@@ -82,13 +87,13 @@ A end-point that presents GET, POST, PUT and DELETE methods.
 
 <hr>
 
-#### 2.1 Using the /api/products
+#### 2.1 Using the /api/products endpoint
 GET, POST, PUT, DELETE <br>
 `http://localhost:1923/api/products` <br>
 
 <hr>
 
-#### 2.2 curl: /api/products
+#### 2.2 curl: /api/products endpoints
 `curl -X GET http://localhost:1923/api/products` <br>
 `curl -X POST http://localhost:1923/api/products` <br>
 `curl -X PUT http://localhost:1923/api/products` <br>
@@ -96,28 +101,32 @@ GET, POST, PUT, DELETE <br>
 
 <hr>
 
-#### 2.3 Returns of /api/products
+#### 2.3 Returns of /api/products endpoint
 All of the above methods return 204.
 
 <hr>
 
-#### 2.4 Life-cycle of a request to /api/products as flowchart
+#### 2.4 Life-cycle of a request to /api/products endpoint as flowchart
 ![life-cycle](https://github.com/halilkocaoz/kartaca-task/blob/main/assets/life-cycle-request.png "life-cycle")
 
 <hr>
 
 ## Go Project : Kafka Consumer and Database Updater 
-You can look at the Go Project at [here](https://github.com/halilkocaoz/kartaca-task/tree/main/consumer). It's consuming the messages which are coming from ASP.NET Web API and write that messages to database.
+You can look at the Go Project from [here](https://github.com/halilkocaoz/kartaca-task/tree/main/consumer). It consumes the messages which are coming from ASP.NET Web API and write that messages to database.
+
+<hr>
 
 ### Working Principle of Go Project
-It collects the messages from `response_log` topic as `go-consumer` and it accumulates that data in a fixed size string array called `kafkaMessages`. This array's size fixed using `maxMessageCountToAccumulate` const variable and consumer collects messages until `receivedMessageCount` reachs `maxMessageCountToAccumulate`. 
+It collects the messages from `response_log` topic as `go-consumer` and it accumulates that data in a fixed size string array called `kafkaMessages`. This array's size fixed using `maxMessageCountToAccumulate` const variable and consumer collects messages until `receivedMessageCount` reachs `maxMessageCountToAccumulate`.
 
+If `receivedMessageCount` >= `maxMessageCountToAccumulate`, write to database method run and it inserts all of the collected messages to database with **one transaction**. After then, `receivedMessageCount` sets to zero and consumer continues to collect data from last offset until again `receivedMessageCount` reachs to `maxMessageCountToAccumulate`.
 
-If `receivedMessageCount` >= `maxMessageCountToAccumulate`, write to database method run and it inserts all of the collected messages to database with **one transaction**. After then, `receivedMessageCount` sets to zero and consumer continues to collect data from last offset until again `receivedMessageCount` reach to `maxMessageCountToAccumulate`.
-
+<hr>
 
 ## Status
 Continue
+
+<hr>
 
 ## Contact
 If you have any question about the repository or you just want to say something be free to reach me <br>
