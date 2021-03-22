@@ -9,7 +9,7 @@ This repository contains the my solutions of application and service development
 
 ## Table of contents
 * [Setup](#setup)
-* [Docs](#docs)
+* [Docs](#docs) <br>
 * [Techs](#techs)
 * [Contact](#contact)
 
@@ -30,11 +30,67 @@ docker-compose up build -d
 
 ## Docs
 
-* [.NET | WebAPI](#docs)
-* [Go | Consumer](#docs)
-* [Database](#docs)
-* [Client](#docs)
+# ASP.NET 5 | WebAPI
+ You can see the ASP.NET 5 WebAPI project in [this directory](https://github.com/halilkocaoz/kartaca-task/tree/main/server/Kartaca.Intern).
 
+The project has two end-point paths,
+
+1. /health/api/products [GET]
+2. /api/products   [GET, POST, PUT, DELETE]
+
+# 1. /health/api/products
+This endpoint presents the following data about requests to /api/products in the last hour;
+* HTTP Method
+* Elapsed time to response
+* When was it done?
+
+## 1.1 Using the /api/statistics
+GET <br>
+`http://localhost:1923/health/api/products`
+
+## 1.2 Returns of GET: /api/statistics
+* 204 <br>
+If there are not request that made to `/api/products` in the last hour, you get 204. <br>
+* 200 <br>
+  Returns of JSON data that requests which are made to `/api/products` in last hour.
+```json
+[
+  {
+    "method": "GET",
+    "elapsedTime": 375,
+    "timestampUtc": 1616368665
+  }
+  {
+    "method": "GET",
+    "elapsedTime": 200,
+    "timestampUtc": 1616368655
+  }
+  {
+    "method": "PUT",
+    "elapsedTime": 1200,
+    "timestampUtc": 1616368610
+  }
+]
+```
+
+# 2. /api/products
+A end-point that presents GET, POST, PUT and DELETE methods.
+
+## 2.1 Using the /api/products
+GET, POST, PUT, DELETE <br>
+`http://localhost:1923/api/products` <br>
+
+### 2.2 curl: /api/products
+`curl -X GET http://localhost:1923/api/products` <br>
+`curl -X POST http://localhost:1923/api/products` <br>
+`curl -X PUT http://localhost:1923/api/products` <br>
+`curl -X DELETE http://localhost:1923/api/products` <br>
+
+### 2.3 Returns of /api/products
+All of the above methods return 204.
+
+### 2.4 Life-cycle of a request to /api/products as flowchart
+![life-cycle](https://github.com/halilkocaoz/kartaca-task/blob/main/assets/life-cycle-request.png "life-cycle")
 ## Techs
 
 * .
