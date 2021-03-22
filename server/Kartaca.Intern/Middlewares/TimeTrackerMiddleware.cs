@@ -37,7 +37,6 @@ namespace Kartaca.Intern.Middlewares
                 {
                     _kafkaLogService.SendAsync(
                         new ResponseLog(httpContext.Request.Method,
-                        httpContext.Request.Path,
                         stopwatch.ElapsedMilliseconds));
                 }
             }
