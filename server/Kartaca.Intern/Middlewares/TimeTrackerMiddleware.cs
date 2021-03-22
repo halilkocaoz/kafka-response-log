@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Kartaca.Intern.Models;
 using Kartaca.Intern.Services;
@@ -19,21 +20,29 @@ namespace Kartaca.Intern.Middlewares
             _next = next;
             _kafkaLogService = kafkaLogService;
         }
+        private readonly string[] toBeTrackedPaths = { "/api/products" };
 
         public async Task InvokeAsync(HttpContext httpContext)
         {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            await _next(httpContext);
-            stopwatch.Stop();
+            var path = httpContext.Request.Path.ToString().ToLower();
 
-            if (httpContext.Response.StatusCode != 404)
+            if (toBeTrackedPaths.Any(x => x == path))
             {
-                _kafkaLogService.SendAsync(
-                    new ResponseLog(httpContext.Request.Method,
-                    httpContext.Request.Path,
-                    stopwatch.ElapsedMilliseconds));
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
+                await _next(httpContext);
+                stopwatch.Stop();
+
+                if (httpContext.Response.StatusCode != 404)
+                {
+                    _kafkaLogService.SendAsync(
+                        new ResponseLog(httpContext.Request.Method,
+                        httpContext.Request.Path,
+                        stopwatch.ElapsedMilliseconds));
+                }
             }
+            else
+                await _next(httpContext);
         }
     }
 }
