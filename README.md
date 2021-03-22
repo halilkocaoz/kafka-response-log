@@ -32,7 +32,7 @@ docker-compose up build -d
 ## Docs
 
 ## ASP.NET 5 Web API
- You can see the ASP.NET 5 WebAPI project in [this directory](https://github.com/halilkocaoz/kartaca-task/tree/main/server/Kartaca.Intern).
+ You can see the ASP.NET 5 Web API project in [this directory](https://github.com/halilkocaoz/kartaca-task/tree/main/server/Kartaca.Intern).
 
 The project has two end-point paths,
 
