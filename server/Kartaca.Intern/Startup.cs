@@ -16,7 +16,10 @@ namespace Kartaca.Intern
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<KafkaLogService>();
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(jsonOptions =>
+            {
+                jsonOptions.JsonSerializerOptions.IgnoreNullValues = true;
+            });
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
