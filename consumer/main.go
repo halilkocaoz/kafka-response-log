@@ -69,9 +69,9 @@ func main() {
 
 	consumer.SubscribeTopics([]string{"response_log"}, nil)
 
-	var messages []string
 	receivedMessageCount := 0
 	maxMessageCountToAccumulate := 10
+	dbTransaction, _ := db.Begin()
 
 	for {
 		kafkaMessage, err := consumer.ReadMessage(-100)
@@ -79,22 +79,18 @@ func main() {
 			fmt.Println(err.Error())
 		} else {
 			receivedMessageCount++
-			strKafkaMessage := string(kafkaMessage.Value)
-			messages = append(messages, strKafkaMessage)
+			strKafkaMessage := strings.Split(string(kafkaMessage.Value), " ")
 			fmt.Println(strKafkaMessage)
 
-			if receivedMessageCount >= maxMessageCountToAccumulate /*len(messages) >= 10*/ {
-				fmt.Println("DB UPDATING")
-				for i := 0; i < maxMessageCountToAccumulate; i++ {
-					splittedMessage := strings.Split(messages[i], " ")
+			dbTransaction.Exec(insertStatement,
+				strKafkaMessage[0], // method
+				strKafkaMessage[1], // elapsed time
+				strKafkaMessage[2], // utc timestamp
+			)
 
-					db.QueryRow(insertStatement,
-						splittedMessage[0], // method
-						splittedMessage[1], // elapsed time
-						splittedMessage[2], // utc timestamp
-					).Scan()
-				}
-				messages = nil
+			if receivedMessageCount >= maxMessageCountToAccumulate {
+				fmt.Println("DB UPDATING")
+				dbTransaction.Commit()
 				receivedMessageCount = 0
 				defer db.Close()
 			}
