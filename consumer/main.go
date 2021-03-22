@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
+	"time"
 
 	_ "github.com/lib/pq"
 	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
@@ -14,21 +15,21 @@ const (
 	database        = "postgres"
 	databaseUser    = "postgres"
 	databasePass    = "psqlpass"
-	databaseServer  = "localhost:15432"
+	databaseServer  = "kartaca-postgres:5432"
 )
 
 func checkDatabase() *sql.DB {
 	fmt.Println("SQL Open")
 	db, err := sql.Open("postgres", "postgres://"+databaseUser+":"+databasePass+"@"+databaseServer+"/"+database+"?sslmode=disable")
 	if err != nil {
-		panic(err)
+		fmt.Println(err.Error())
 	}
 
 	fmt.Println("SQL Open: OK")
 
 	err = db.Ping()
 	if err != nil {
-		panic(err)
+		fmt.Println(err.Error())
 	}
 
 	fmt.Println("Database PING: OK")
@@ -47,18 +48,19 @@ func setDatabase() *sql.DB {
 	);`)
 
 	if err != nil {
-		panic(err)
+		fmt.Println(err.Error())
 	}
 
 	return db
 }
 
 func main() {
+	time.Sleep(10 * time.Second)
 	db := setDatabase()
 	defer db.Close()
 
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": "localhost:19092", //kartaca-kafka:9092 = localhost:19092
+		"bootstrap.servers": "kartaca-kafka:9092",
 		"group.id":          "go-consumer",
 		"auto.offset.reset": "earliest",
 	})
@@ -71,29 +73,43 @@ func main() {
 
 	receivedMessageCount := 0
 	maxMessageCountToAccumulate := 10
-	dbTransaction, _ := db.Begin()
-
+	var kafkaMessages []string
 	for {
 		kafkaMessage, err := consumer.ReadMessage(-100)
 		if err != nil {
 			fmt.Println(err.Error())
 		} else {
+			kafkaMessages = append(kafkaMessages, string(kafkaMessage.Value))
+			fmt.Println(kafkaMessages[receivedMessageCount])
 			receivedMessageCount++
-			strKafkaMessage := strings.Split(string(kafkaMessage.Value), " ")
-			fmt.Println(strKafkaMessage)
-
-			dbTransaction.Exec(insertStatement,
-				strKafkaMessage[0], // method
-				strKafkaMessage[1], // elapsed time
-				strKafkaMessage[2], // utc timestamp
-			)
 
 			if receivedMessageCount >= maxMessageCountToAccumulate {
-				fmt.Println("DB UPDATING")
-				dbTransaction.Commit()
+				writeMessagesToDB(&kafkaMessages, db)
 				receivedMessageCount = 0
 				defer db.Close()
 			}
 		}
 	}
+}
+
+func writeMessagesToDB(messages *[]string, db *sql.DB) {
+	dbTransaction, _ := db.Begin()
+	fmt.Println("DB UPDATING")
+
+	for i := 0; i < len(*messages); i++ {
+		splittedMsg := strings.Split((*messages)[i], " ")
+		dbTransaction.Exec(insertStatement,
+			splittedMsg[0], // method
+			splittedMsg[1], // elapsed time
+			splittedMsg[2], // utc timestamp
+		)
+	}
+
+	err := dbTransaction.Commit()
+	if err != nil {
+		fmt.Println(err.Error())
+	} else {
+		fmt.Println("All messages commited")
+	}
+	defer db.Close()
 }
