@@ -14,7 +14,8 @@ namespace Kartaca.Intern.Services
             MessageTimeoutMs = 500,
             Acks = Acks.None
         };
-
+        
+        #pragma warning disable 1998
         public async void SendAsync(ResponseLog responseLog)
         {
             using (var producer = new ProducerBuilder<string, string>(producerConfig)
@@ -22,7 +23,8 @@ namespace Kartaca.Intern.Services
             .Build())
             {
                 var message = new Message<string, string> { Value = responseLog.Message };
-                producer.ProduceAsync(topic, message);
+                #pragma warning disable 4014
+                var t = producer.ProduceAsync(topic, message);
             }
         }
     }
