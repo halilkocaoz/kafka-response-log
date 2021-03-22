@@ -11,11 +11,12 @@ import (
 )
 
 const (
-	insertStatement = `INSERT INTO net_logs (method, elapsed_time, timestamputc) VALUES ($1, $2, $3)`
-	database        = "postgres"
-	databaseUser    = "postgres"
-	databasePass    = "psqlpass"
-	databaseServer  = "kartaca-postgres:5432"
+	maxMessageCountToAccumulate = 10
+	insertStatement             = `INSERT INTO net_logs (method, elapsed_time, timestamputc) VALUES ($1, $2, $3)`
+	database                    = "postgres"
+	databaseUser                = "postgres"
+	databasePass                = "psqlpass"
+	databaseServer              = "kartaca-postgres:5432"
 )
 
 func checkDatabase() *sql.DB {
@@ -72,32 +73,29 @@ func main() {
 	consumer.SubscribeTopics([]string{"response_log"}, nil)
 
 	receivedMessageCount := 0
-	maxMessageCountToAccumulate := 10
-	var kafkaMessages []string
+	var kafkaMessages [maxMessageCountToAccumulate]string
 	for {
 		kafkaMessage, err := consumer.ReadMessage(-100)
 		if err != nil {
 			fmt.Println(err.Error())
 		} else {
-			kafkaMessages = append(kafkaMessages, string(kafkaMessage.Value))
+			kafkaMessages[receivedMessageCount] = string(kafkaMessage.Value)
 			fmt.Println(kafkaMessages[receivedMessageCount])
 			receivedMessageCount++
 
 			if receivedMessageCount >= maxMessageCountToAccumulate {
-				writeMessagesToDB(&kafkaMessages, db)
+				writeMessagesToDB(kafkaMessages, db)
 				receivedMessageCount = 0
-				defer db.Close()
 			}
 		}
 	}
 }
 
-func writeMessagesToDB(messages *[]string, db *sql.DB) {
+func writeMessagesToDB(messages [maxMessageCountToAccumulate]string, db *sql.DB) {
 	dbTransaction, _ := db.Begin()
-	fmt.Println("DB UPDATING")
 
-	for i := 0; i < len(*messages); i++ {
-		splittedMsg := strings.Split((*messages)[i], " ")
+	for i := 0; i < maxMessageCountToAccumulate; i++ {
+		splittedMsg := strings.Split(messages[i], " ")
 		dbTransaction.Exec(insertStatement,
 			splittedMsg[0], // method
 			splittedMsg[1], // elapsed time
@@ -111,5 +109,4 @@ func writeMessagesToDB(messages *[]string, db *sql.DB) {
 	} else {
 		fmt.Println("All messages commited")
 	}
-	defer db.Close()
 }
