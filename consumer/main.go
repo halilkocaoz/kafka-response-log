@@ -55,31 +55,52 @@ func setDatabase() *sql.DB {
 	return db
 }
 
+var consumer *kafka.Consumer
+var db *sql.DB
+
 func main() {
 	time.Sleep(10 * time.Second)
-	db := setDatabase()
+	db = setDatabase()
 	defer db.Close()
+	consumerCreatingRepeatTime := 0
 
-	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
+consumerCreateStatement:
+	cnsmr, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": "kartaca-kafka:9092",
 		"group.id":          "go-consumer",
 		"auto.offset.reset": "earliest",
 	})
 
 	if err != nil {
-		panic(err)
+		consumerCreatingRepeatTime++
+		if consumerCreatingRepeatTime <= 5 {
+			fmt.Println("Retrying to create consumer")
+			time.Sleep(3 * time.Second)
+			goto consumerCreateStatement
+		} else {
+			fmt.Printf("Tried %d times but", consumerCreatingRepeatTime)
+			panic(err)
+		}
 	}
+	consumer = cnsmr
 
+subscribeStatement:
 	err = consumer.SubscribeTopics([]string{"response_log"}, nil)
 
 	if err == nil {
 		fmt.Println("Consumer subscribed the topic")
 	} else {
-		fmt.Println(err.Error())
+		fmt.Println(err.Error() + "\n Trying again")
+		goto subscribeStatement
 	}
 
+	startConsuming()
+}
+
+func startConsuming() {
 	receivedMessageCount := 0
 	var kafkaMessages [maxMessageCountToAccumulate]string
+
 	for {
 		kafkaMessage, err := consumer.ReadMessage(-100)
 		if err != nil {
@@ -90,14 +111,14 @@ func main() {
 			receivedMessageCount++
 
 			if receivedMessageCount >= maxMessageCountToAccumulate {
-				writeMessagesToDB(kafkaMessages, db)
+				commitMessagesDatabase(kafkaMessages)
 				receivedMessageCount = 0
 			}
 		}
 	}
 }
 
-func writeMessagesToDB(messages [maxMessageCountToAccumulate]string, db *sql.DB) {
+func commitMessagesDatabase(messages [maxMessageCountToAccumulate]string) {
 	dbTransaction, _ := db.Begin()
 
 	for i := 0; i < maxMessageCountToAccumulate; i++ {
@@ -110,9 +131,11 @@ func writeMessagesToDB(messages [maxMessageCountToAccumulate]string, db *sql.DB)
 	}
 
 	err := dbTransaction.Commit()
+
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {
 		fmt.Printf("Last received %d messages committed\n", maxMessageCountToAccumulate)
 	}
+
 }
