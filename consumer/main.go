@@ -70,7 +70,13 @@ func main() {
 		panic(err)
 	}
 
-	consumer.SubscribeTopics([]string{"response_log"}, nil)
+	err = consumer.SubscribeTopics([]string{"response_log"}, nil)
+
+	if err == nil {
+		fmt.Println("Consumer subscribed the topic")
+	} else {
+		fmt.Println(err.Error())
+	}
 
 	receivedMessageCount := 0
 	var kafkaMessages [maxMessageCountToAccumulate]string
@@ -107,6 +113,6 @@ func writeMessagesToDB(messages [maxMessageCountToAccumulate]string, db *sql.DB)
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {
-		fmt.Println("All messages commited")
+		fmt.Printf("Last received %d messages committed\n", maxMessageCountToAccumulate)
 	}
 }
