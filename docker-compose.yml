@@ -41,7 +41,7 @@ services:
     command: "bash -c 'echo creating topics && \ kafka-topics --bootstrap-server kartaca-kafka:9092 --create --topic response_log'"
 
   web-net:
-    build: ./server/Kartaca.Intern
+    build: "."
     container_name: net-webapi
     ports:
       - "1923:80"
