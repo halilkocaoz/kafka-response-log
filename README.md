@@ -123,6 +123,11 @@ If `receivedMessageCount` >= `maxMessageCountToAccumulate`, write to database me
 
 <hr>
 
+### Be Careful ! Every requests that come to /api/products, every Kafka messages that produce from Web API project don't insert to database, immediately by consumer.
+As I mentioned above, received message count must reach to `maxMessageCountToAccumulate` to start the database transaction and insert received messages with single transaction.
+
+<hr>
+
 ## Status
 Continue
 
