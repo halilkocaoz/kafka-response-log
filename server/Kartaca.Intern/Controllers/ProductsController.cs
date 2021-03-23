@@ -10,13 +10,10 @@ namespace Kartaca.Intern.Controllers
     {
         [HttpGet]
         public IActionResult Get() => NoContent();
-
         [HttpPost]
         public IActionResult Post() => NoContent();
-
         [HttpPut]
         public IActionResult Put() => NoContent();
-
         [HttpDelete]
         public IActionResult Delete() => NoContent();
     }

@@ -12,22 +12,16 @@ namespace Kartaca.Intern.Services
         private readonly ProducerConfig producerConfig = new ProducerConfig()
         {
             BootstrapServers = server,
-            MessageTimeoutMs = 750,
+            MessageTimeoutMs = 1000,
             Acks = Acks.None
         };
 
-        public KafkaLogService(ILogger<KafkaLogService> logger)
-        {
-            _logger = logger;
-        }
+        public KafkaLogService(ILogger<KafkaLogService> logger) => _logger = logger;
 
         public async void SendAsync(ResponseLog responseLog)
         {
             var message = new Message<string, string> { Value = responseLog.Message };
-
-            using (var producer = new ProducerBuilder<string, string>(producerConfig)
-            .SetValueSerializer(Serializers.Utf8)
-            .Build())
+            using (var producer = new ProducerBuilder<string, string>(producerConfig).SetValueSerializer(Serializers.Utf8).Build())
             {
                 try
                 {

@@ -11,19 +11,16 @@ namespace Kartaca.Intern.Middlewares
     {
         private readonly KafkaLogService _kafkaLogService;
         private readonly RequestDelegate _next;
-
         public TimeTrackerMiddleware(RequestDelegate next, KafkaLogService kafkaLogService)
         {
             _next = next;
             _kafkaLogService = kafkaLogService;
         }
-        
         private readonly string[] toBeTrackedPaths = { "/api/products", "/api/products/" };
 
         public async Task InvokeAsync(HttpContext httpContext)
         {
             var requestedPath = httpContext.Request.Path.ToString().ToLower();
-
             if (toBeTrackedPaths.Any(paths => paths == requestedPath))
             {
                 var stopwatch = new Stopwatch();

@@ -1,4 +1,3 @@
-
 using System;
 
 namespace Kartaca.Intern.Models
@@ -11,7 +10,6 @@ namespace Kartaca.Intern.Models
             ElapsedTime = elapsedTime;
             Message = $"{Method} {ElapsedTime} {DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
         }
-        
         public ResponseLog(string method, long elapsedTime, long timestamp)
         {
             Method = method;
