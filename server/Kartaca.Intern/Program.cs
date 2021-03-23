@@ -11,6 +11,7 @@ namespace Kartaca.Intern
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.UseWebRoot("./client");
                     webBuilder.UseStartup<Startup>();
                 });
     }

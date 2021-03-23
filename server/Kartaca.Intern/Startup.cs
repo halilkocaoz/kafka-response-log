@@ -24,6 +24,10 @@ namespace Kartaca.Intern
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<TimeTrackerMiddleware>();
+            
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
