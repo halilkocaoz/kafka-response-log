@@ -17,8 +17,8 @@ namespace Kartaca.Intern.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var oneHourAgoFromNowAsUnixMs = DateTimeOffset.UtcNow.AddHours(-1).ToUnixTimeMilliseconds();
-            var query = $"select * from net_logs where timestamputc >= {oneHourAgoFromNowAsUnixMs}";
+            var oneHourAgoFromNowAsUnixSeconds = DateTimeOffset.UtcNow.AddHours(-1).ToUnixTimeSeconds();
+            var query = $"select * from net_logs where timestamputc >= {oneHourAgoFromNowAsUnixSeconds}";
 
             await using var npgsqlConnection = new NpgsqlConnection(conStr);
             await npgsqlConnection.OpenAsync();

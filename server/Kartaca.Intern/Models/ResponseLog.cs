@@ -9,7 +9,7 @@ namespace Kartaca.Intern.Models
         {
             Method = method;
             ElapsedTime = elapsedTime;
-            Message = $"{Method} {ElapsedTime} {DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+            Message = $"{Method} {ElapsedTime} {DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
         }
         
         public ResponseLog(string method, long elapsedTime, long timestamp)
