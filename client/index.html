@@ -5,19 +5,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="./scripts/chartjs/Chart.min.js"></script>
-    <style>
-        body {
-            background-color: #323232;
-        }
-        canvas {
-            -moz-user-select: none;
-            -webkit-user-select: none;
-            -ms-user-select: none;
-            background-color: #323232;
-        }
-    </style>
+    <title>Dashboard</title>
+    <script src="./js/libraries/Chart.min.js"></script>
+    <script src="./js/libraries/moment.min.js"></script>
+    <script src="./js/dashboard.js"></script>
+    <script src="./js/chart.js"></script>
+
+    <link rel="stylesheet" href="./style/reset.css" type="text/css">
+    <link rel="stylesheet" href="./style/main.css" type="text/css">
 </head>
 
 <body>
@@ -25,60 +20,7 @@
         <canvas id="canvas"></canvas>
     </div>
     <script>
-        var chartConfig = {
-            type: 'line',
-            data: {
-                labels: ['Test 1', 'Test 2', 'Test 3', 'April 4', 'Test 5', 'Test 6', 'Test 7'],
-                datasets: [{
-                    label: 'GET',
-                    backgroundColor: '#FF0000',
-                    borderColor: '#FF0000',
-                    data: [10, 15, 25, 35, 25, 10, 45],
-                    fill: false,
-                }, {
-                    label: 'POST',
-                    backgroundColor: '#00FF00',
-                    borderColor: '#00FF00',
-                    fill: false,
-                    data: [20, 8, 1, 33, 55, 13, 22],
-                }]
-            },
-            options: {
-                responsive: true,
-                title: {
-                    display: true,
-                    text: 'api/products'
-                },
-                tooltips: {
-                    mode: 'index',
-                    intersect: false,
-                },
-                hover: {
-                    mode: 'nearest',
-                    intersect: true
-                },
-                scales: {
-                    xAxes: [{
-                        display: true,
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Time'
-                        }
-                    }],
-                    yAxes: [{
-                        display: true,
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Elapsed time to response'
-                        }
-                    }]
-                }
-            }
-        };
-        window.onload = function () {
-            var canva = document.getElementById('canvas').getContext('2d');
-            window.myLine = new Chart(canva, chartConfig);
-        };
+        drawChart(null, null, null, null, "canvas");
     </script>
 </body>
 
