@@ -15,6 +15,14 @@ namespace Kartaca.Intern
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder => {
+                    builder.AllowAnyMethod();
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyOrigin();
+                });
+            });
             services.AddTransient<KafkaLogService>();
             services.AddControllers().AddJsonOptions(jsonOptions =>
             {
@@ -24,10 +32,9 @@ namespace Kartaca.Intern
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<TimeTrackerMiddleware>();
-            
+            app.UseCors();
             app.UseDefaultFiles();
             app.UseStaticFiles();
-
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
