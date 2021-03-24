@@ -4,13 +4,20 @@ gAAAAABgUWKB2jyN8QxVQ8s38TQF553f3CFNzWMFlXCGArb40zwz1sQ757-P5dUa2MGSQKIreeC9K8O2
 
 --->
 
-# kartaca-task
-This repository contains the my solutions of application and service development from Kartaca's tasks.
+<span align="center">
+<a href="https://codeclimate.com/github/halilkocaoz/kafka-response-time-tracking/maintainability"><img src="https://api.codeclimate.com/v1/badges/9dc73c64fdfe2c32418a/maintainability" /></a><a href="https://www.codacy.com/gh/halilkocaoz/kafka-response-time-tracking/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=halilkocaoz/kafka-response-time-tracking&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/5d7c3538a0d144beaac9ef265710f613" /></a>
+</span>
+
+</hr>
+
+
+# kafka-response-log
+It contains a solution for tracking the time between request and response, messaging the tracked data to Kafka and inserting the messages which are coming from Kafka into the database, also it contains an simple UI to see the logs in a chart.
 
 <hr>
 
 ## Table of contents
-* [Setup](#setup)
+* [Docker](#docker)
 * [Docs](#docs)
   - [ASP.NET 5 Web API](#aspnet-5-web-api)
   - [Go Project : Kafka Consumer and Database Updater](#go-project--kafka-consumer-and-database-updater)
@@ -18,8 +25,7 @@ This repository contains the my solutions of application and service development
 
 <hr>
 
-## Setup
-
+## Docker 
 Docker compose runs 5 service;
 * Apache ZooKeeper
 * Apache Kafka
@@ -41,29 +47,28 @@ docker-compose up
 ## Docs
 
 ## ASP.NET 5 Web API
- You can see the ASP.NET 5 Web API project in [this directory](https://github.com/halilkocaoz/kartaca-task/tree/main/server/Kartaca.Intern).
+You can see the ASP.NET 5 Web API project in [this directory](https://github.com/halilkocaoz/kafka-response-time-tracking/tree/main/server/Kartaca.Intern).
 
 The project has two end-point paths,
 
 1. /health/api/products [GET]
 2. /api/products   [GET, POST, PUT, DELETE]
 
-### 1. /health/api/products
-This endpoint presents the following data about requests to /api/products in the last hour;
+### /health/api/products
+This endpoint path presents the following data about requests to `/api/products` in the last hour;
 * HTTP Method
 * Elapsed time to response
 * When was it requested?
 
 
-#### 1.1 Using the /health/api/products endpoint
-GET <br>
-`http://localhost:1923/health/api/products`
+#### Using the /health/api/products endpoint
+GET : `http://localhost:1923/health/api/products`
 
-#### 1.2 Returns of GET: /health/api/products endpoint
+#### Returns of GET: /health/api/products endpoint
 * 204 <br>
 If there is no request that made to `/api/products` in the last hour, you get 204. <br>
 * 200 <br>
-  Returns of JSON data that give information about requests that to `/api/products` in last hour.
+  Returns JSON data that give information about requests to `/api/products` in last hour.
 ```json
 [
   {
@@ -84,29 +89,28 @@ If there is no request that made to `/api/products` in the last hour, you get 20
 ]
 ```
 
-### 2. /api/products
-A end-point that presents GET, POST, PUT and DELETE methods.
+### /api/products
+A end-point path that presents GET, POST, PUT and DELETE methods. That endpoints are for create dummy data to log and all of the methods have [delayer](https://github.com/halilkocaoz/kafka-response-time-tracking/tree/main/server/Kartaca.Intern/Filters/Delayer.cs) middleware (known as ActionFilterAttribute in .NET ecosystem).
 
-#### 2.1 Using the /api/products endpoint
-GET, POST, PUT, DELETE <br>
-`http://localhost:1923/api/products` <br>
+#### Using the /api/products endpoint
+`/api/products` path supports to GET, POST, PUT, DELETE methods. You can use `http://localhost:1923/api/products` address to your requests. <br>
 
-#### 2.2 curl: /api/products endpoints
 `curl -X GET http://localhost:1923/api/products` <br>
 `curl -X POST http://localhost:1923/api/products` <br>
 `curl -X PUT http://localhost:1923/api/products` <br>
 `curl -X DELETE http://localhost:1923/api/products` <br>
 
-#### 2.3 Returns of /api/products endpoint
-All of the above methods return 204.
+#### Returns of /api/products endpoint
+All of the above methods return 204, other 405.
 
-#### 2.4 Life-cycle of a request to /api/products endpoint as flowchart
-![life-cycle](https://github.com/halilkocaoz/kartaca-task/blob/main/assets/life-cycle-request.png "life-cycle")
+#### Life-cycle of a request to /api/products endpoint as flowchart
+[TimeTrackerMiddleware](https://github.com/halilkocaoz/kafka-response-time-tracking/tree/main/server/Kartaca.Intern/Middlewares/TimeTrackerMiddleware.cs)
+![life-cycle](https://github.com/halilkocaoz/kafka-response-time-tracking/blob/main/assets/life-cycle-request.png "life-cycle")
 
 <hr>
 
 ## Go Project : Kafka Consumer and Database Updater 
-You can look at the Go Project from [here](https://github.com/halilkocaoz/kartaca-task/tree/main/consumer). It consumes the messages which are coming from ASP.NET Web API and write that messages to database.
+You can look at the Go Project from [here](https://github.com/halilkocaoz/kafka-response-time-tracking/tree/main/consumer). It consumes the messages which are coming from ASP.NET Web API and write that messages to database.
 
 ### Working Principle of Go Project
 It collects the messages from `response_log` topic as `go-consumer` and it accumulates that data in a fixed size string array called `kafkaMessages`. This array's size fixed using `maxMessageCountToAccumulate` const variable and consumer collects messages until `receivedMessageCount` reaches `maxMessageCountToAccumulate`.
@@ -119,14 +123,13 @@ As I mentioned above, the `receivedMessageCount` must reaches `maxMessageCountTo
 
 <hr>
 
+<span align="center">
 
 ## Contact
 If you have any question about the repository or you just want to say something be free to reach me <br>
 
-<span align="center">
 
 halilkocaoz (Telegram)<br>
 halil.i.kocaoz@gmail.com
 
 </span>
-

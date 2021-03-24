@@ -16,7 +16,7 @@ const (
 	database                    = "postgres"
 	databaseUser                = "postgres"
 	databasePass                = "psqlpass"
-	databaseServer              = "kartaca-postgres:5432"
+	databaseServer              = "postgres:5432"
 )
 
 func checkDatabase() *sql.DB {
@@ -66,7 +66,7 @@ func main() {
 
 consumerCreateStatement:
 	cnsmr, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": "kartaca-kafka:9092",
+		"bootstrap.servers": "kafka:9092",
 		"group.id":          "go-consumer",
 		"auto.offset.reset": "earliest",
 	})

@@ -8,8 +8,8 @@ namespace Kartaca.Intern.Services
     {
         private readonly ILogger _logger;
         private const string topic = "response_log";
-        private const string server = "kartaca-kafka:9092";
-        private readonly ProducerConfig producerConfig = new ProducerConfig()
+        private const string server = "kafka:9092";
+        private readonly ProducerConfig producerConfig = new ProducerConfig
         {
             BootstrapServers = server,
             MessageTimeoutMs = 1000,

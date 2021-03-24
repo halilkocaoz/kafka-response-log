@@ -11,8 +11,8 @@ namespace Kartaca.Intern.Controllers
     [Route("[Controller]/api/products/")]
     public class HealthController : ControllerBase
     {
-        private List<ResponseLog> logs = new List<ResponseLog>();
-        private const string conStr = "Host=kartaca-postgres;Username=postgres;Password=psqlpass;Database=postgres";
+        private readonly List<ResponseLog> logs = new List<ResponseLog>();
+        private const string conStr = "Host=postgres;Username=postgres;Password=psqlpass;Database=postgres";
         [HttpGet]
         public async Task<IActionResult> Get()
         {

@@ -29,12 +29,16 @@ namespace Kartaca.Intern.Middlewares
                 stopwatch.Stop();
 
                 if (httpContext.Response.StatusCode != 405 && httpContext.Response.StatusCode != 404)
+                {
                     _kafkaLogService.SendAsync(
                         new ResponseLog(httpContext.Request.Method,
                         stopwatch.ElapsedMilliseconds));
+                }
             }
             else
+            {
                 await _next(httpContext);
+            }
         }
     }
 }

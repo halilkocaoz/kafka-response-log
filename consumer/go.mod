@@ -1,4 +1,4 @@
-module github.com/halilkocaoz/kartaca-task/consumer
+module github.com/halilkocaoz/kafka-response-time-tracking/consumer
 
 go 1.13
 
