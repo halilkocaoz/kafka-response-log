@@ -24,6 +24,7 @@ function seperateData(data) {
         }
     });
 }
+
 function fetchData() {
     fetch('http://localhost:1923/health/api/products')
         .then(response => {
@@ -31,6 +32,7 @@ function fetchData() {
                 response.json()
                     .then(function (data) {
                         seperateData(data);
+                        updateChart();
                         setTimeout(fetchData, UpdateTimeoutMs);
                     });
             }

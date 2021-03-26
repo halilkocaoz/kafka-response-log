@@ -1,4 +1,4 @@
-module github.com/halilkocaoz/kafka-response-time-tracking/consumer
+module github.com/halilkocaoz/kafka-response-log/consumer
 
 go 1.13
 

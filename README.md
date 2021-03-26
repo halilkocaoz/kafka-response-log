@@ -1,6 +1,6 @@
 <span align="center">
 
-<a href="https://codeclimate.com/github/halilkocaoz/kafka-response-time-tracking/maintainability"><img src="https://api.codeclimate.com/v1/badges/9dc73c64fdfe2c32418a/maintainability" /></a> <a href="https://www.codacy.com/gh/halilkocaoz/kafka-response-time-tracking/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=halilkocaoz/kafka-response-time-tracking&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/5d7c3538a0d144beaac9ef265710f613" /></a>
+<a href="https://codeclimate.com/github/halilkocaoz/kafka-response-log/maintainability"><img src="https://api.codeclimate.com/v1/badges/d1364da3e1590a452ab9/maintainability" /></a> <a href="https://www.codacy.com/gh/halilkocaoz/kafka-response-log/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=halilkocaoz/kafka-response-log&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/5d7c3538a0d144beaac9ef265710f613"/></a>
 
 </span>
 
@@ -13,6 +13,7 @@ It contains a solution for tracking the time between request and response, messa
 
 ## Table of contents
 * [Docker](#docker)
+* [Automatization of the requests with Shell and curl](#automatization-of-the-requests-with-shell-and-curl)
 * [Docs](#docs)
   - [ASP.NET 5 Web API](#aspnet-5-web-api)
   - [Go Project : Kafka Consumer and Database Updater](#go-project--kafka-consumer-and-database-updater)
@@ -36,6 +37,20 @@ Afer the first time:
 ```bash
 docker-compose up
 ```
+
+<hr>
+
+## Automatization of the requests with Shell and curl
+[request.sh](https://github.com/halilkocaoz/kafka-response-log/tree/main/request.sh) provides to automate the requests but it needs Bash or any shell script runner and curl.
+
+```bash
+./request.sh
+```
+
+<hr>
+
+## Dashboard
+You can use the `http://localhost:1923/` address for reaching the dashboard.
 
 <hr>
 
@@ -69,17 +84,17 @@ If there is no request that made to `/api/products` in the last hour, it returns
   {
     "method": "GET",
     "elapsedTime": 375,
-    "timestamp": 1616368665
+    "timestamputc": 1616368665
   }
   {
     "method": "GET",
     "elapsedTime": 200,
-    "timestamp": 1616368655
+    "timestamputc": 1616368655
   }
   {
     "method": "PUT",
     "elapsedTime": 1200,
-    "timestamp": 1616368610
+    "timestamputc": 1616368610
   }
 ]
 ```
@@ -89,11 +104,6 @@ An endpoint path that presents GET, POST, PUT and DELETE methods. That endpoints
 
 #### Using the /api/products endpoint
 The `/api/products` path supports to GET, POST, PUT, DELETE methods. You can use the `http://localhost:1923/api/products` address for your requests. <br>
-
-`curl -X GET http://localhost:1923/api/products` <br>
-`curl -X POST http://localhost:1923/api/products` <br>
-`curl -X PUT http://localhost:1923/api/products` <br>
-`curl -X DELETE http://localhost:1923/api/products` <br>
 
 #### Returns of /api/products endpoint
 All of the above methods return 204, other 405.
