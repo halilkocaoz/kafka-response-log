@@ -1,31 +1,45 @@
-function nowHourMinute() {
-    return moment.unix(Date.now() / 1000).format("kk:mm");
-}
-function oneHourAgoHourMinute() {
-    return moment.unix((Date.now() - (1000 * 60 * 60)) / 1000).format("kk:mm")
-}
-function convertUnixToHourMinute(timestamp) {
-    return moment.unix(timestamp).format("kk:mm");
-}
-function chartLabels() {
-    var chartLabels = [];
-    var agoTime = oneHourAgoHourMinute();
-    var nowTime = nowHourMinute();
-    var nowMinute = nowTime.slice(-2);
+const UpdateTimeoutMs = 2000;
 
-    for (let index = nowMinute; index <= 59; index++) {
-        chartLabels.push(agoTime.substring(0, 2) + ":" + index);
-    }
+var getData = [];
+var postData = [];
+var putData = [];
+var deleteData = [];
 
-    chartLabels.push(nowTime.substring(0, 2) + ":00")
-
-    for (let index = 1; index <= nowMinute - 1; index++) {
-        if (index < 10) {
-            chartLabels.push(nowTime.substring(0, 2) + ":0" + index);
+function seperateData(data) {
+    getData = [];
+    postData = [];
+    putData = [];
+    deleteData = [];
+    data.forEach(element => {
+        element.timestamp = convertUnixToHourMinute(element.timestamp);
+        if (element.method === "GET") {
+            getData.push(element);
+        } else if (element.method === "POST") {
+            postData.push(element);
+        } else if (element.method === "PUT") {
+            putData.push(element);
         }
         else {
-            chartLabels.push(nowTime.substring(0, 2) + ":" + index);
+            deleteData.push(element);
         }
-    }
-    return chartLabels;
+    });
 }
+function fetchData() {
+    fetch('http://localhost:1923/health/api/products')
+        .then(response => {
+            if (response.status === 200) {
+                response.json()
+                    .then(function (data) {
+                        seperateData(data);
+                        setTimeout(fetchData, UpdateTimeoutMs);
+                    });
+            }
+            else if (response.status === 204) {
+                //alert("There is no committed data for requests to /api/products in the last hour.");
+                setTimeout(fetchData, UpdateTimeoutMs);
+            }
+        })
+        .catch(err => console.log(err));
+}
+drawChart();
+fetchData();
