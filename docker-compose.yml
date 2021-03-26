@@ -27,7 +27,7 @@ services:
       test: "/usr/bin/kafka-topics --list --zookeeper zookeper:2181"
     ports:
       - "19092:19092"
-    restart: always
+    restart: always ####
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeper:2181

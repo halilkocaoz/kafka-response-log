@@ -1,7 +1,7 @@
-using Kartaca.Intern.Filters;
+using Kafka.Example.Filters;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Kartaca.Intern.Controllers
+namespace Kafka.Example.Controllers
 {
     [ApiController]
     [Route("api/[Controller]")]

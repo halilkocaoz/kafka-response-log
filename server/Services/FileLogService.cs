@@ -1,7 +1,7 @@
-using Kartaca.Intern.Models;
+using Kafka.Example.Models;
 using Microsoft.Extensions.Logging;
 using System.IO;
-namespace Kartaca.Intern.Services
+namespace Kafka.Example.Services
 {
     public class FileLogService : ILogService
     {
@@ -30,7 +30,7 @@ namespace Kartaca.Intern.Services
             {
                 writer.WriteLineAsync(responseLog.Message);
             }
-            _logger.LogInformation($"{responseLog.Message} has been written {logFilePath} file.");
+            _logger.LogInformation($"{responseLog.Message} has been written to {logFilePath} file.");
         }
     }
 }

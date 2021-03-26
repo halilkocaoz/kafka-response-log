@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Kartaca.Intern.Models;
+using Kafka.Example.Models;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 
-namespace Kartaca.Intern.Controllers
+namespace Kafka.Example.Controllers
 {
     [ApiController]
     [Route("[Controller]/api/products/")]
@@ -18,7 +18,7 @@ namespace Kartaca.Intern.Controllers
         {
             //todo: refactor
             var oneHourAgoFromNowAsUnixSeconds = DateTimeOffset.UtcNow.AddHours(-1).ToUnixTimeSeconds();
-            var query = $"select * from net_logs where timestamputc >= {oneHourAgoFromNowAsUnixSeconds}";
+            var query = $"select * from net_logs where timestamputc >= {oneHourAgoFromNowAsUnixSeconds} order by timestamputc";
             
             await using var npgsqlConnection = new NpgsqlConnection(conStr);
             await npgsqlConnection.OpenAsync();

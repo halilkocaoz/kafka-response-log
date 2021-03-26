@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Kartaca.Intern
+namespace Kafka.Example
 {
     public class Program
     {

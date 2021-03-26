@@ -1,6 +1,6 @@
 using System;
 
-namespace Kartaca.Intern.Models
+namespace Kafka.Example.Models
 {
     public class ResponseLog
     {
@@ -8,7 +8,7 @@ namespace Kartaca.Intern.Models
         {
             Method = method;
             ElapsedTime = elapsedTime;
-            Message = $"{Method} {ElapsedTime} {DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
+            Message = $"{Method} {ElapsedTime} {DateTimeOffset.UtcNow.ToUnixTimeSeconds()}".ToUpper();
         }
         public ResponseLog(string method, long elapsedTime, long timestamp)
         {

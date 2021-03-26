@@ -1,7 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Kartaca.Intern.Filters
+namespace Kafka.Example.Filters
 {
     public class Delayer : ActionFilterAttribute
     {

@@ -1,6 +1,6 @@
-using Kartaca.Intern.Models;
+using Kafka.Example.Models;
 
-namespace Kartaca.Intern.Services
+namespace Kafka.Example.Services
 {
     public interface ILogService
     {

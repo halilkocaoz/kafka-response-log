@@ -1,11 +1,11 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /source
 
-COPY ./server/Kartaca.Intern/Kartaca.Intern.csproj ./Kartaca.Intern/
-RUN dotnet restore ./Kartaca.Intern/Kartaca.Intern.csproj
+COPY ./server/Kafka.Example.csproj ./Kafka.Example/
+RUN dotnet restore ./Kafka.Example/Kafka.Example.csproj
 
-COPY ./server/Kartaca.Intern/ ./Kartaca.Intern/
-WORKDIR /source/Kartaca.Intern
+COPY ./server/ ./Kafka.Example/
+WORKDIR /source/Kafka.Example
 RUN dotnet publish --no-restore -c Release -o /app --no-cache /restore
 
 
@@ -15,4 +15,4 @@ WORKDIR /app
 COPY ./client ./client
 
 COPY --from=build /app ./
-ENTRYPOINT ["dotnet", "Kartaca.Intern.dll"]
+ENTRYPOINT ["dotnet", "Kafka.Example.dll"]

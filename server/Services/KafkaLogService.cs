@@ -1,8 +1,8 @@
 using Confluent.Kafka;
-using Kartaca.Intern.Models;
+using Kafka.Example.Models;
 using Microsoft.Extensions.Logging;
 
-namespace Kartaca.Intern.Services
+namespace Kafka.Example.Services
 {
     public class KafkaLogService : ILogService
     {

@@ -1,11 +1,11 @@
-using Kartaca.Intern.Middlewares;
-using Kartaca.Intern.Services;
+using Kafka.Example.Middlewares;
+using Kafka.Example.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Kartaca.Intern
+namespace Kafka.Example
 {
     public class Startup
     {
@@ -17,7 +17,8 @@ namespace Kartaca.Intern
         {
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(builder => {
+                options.AddDefaultPolicy(builder =>
+                {
                     builder.AllowAnyMethod();
                     builder.AllowAnyHeader();
                     builder.AllowAnyOrigin();
@@ -25,15 +26,15 @@ namespace Kartaca.Intern
             });
             services.AddTransient<KafkaLogService>();
             services.AddTransient<FileLogService>();
-            services.AddControllers().AddJsonOptions(jsonOptions =>
-            {
-                jsonOptions.JsonSerializerOptions.IgnoreNullValues = true;
-            });
+            services.AddControllers(x => x.AllowEmptyInputInBodyModelBinding = true).AddJsonOptions(jsonOptions =>
+              {
+                  jsonOptions.JsonSerializerOptions.IgnoreNullValues = true;
+              });
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseMiddleware<TimeTrackerMiddleware>();
             app.UseCors();
+            app.UseMiddleware<TimeTrackerMiddleware>();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseRouting();

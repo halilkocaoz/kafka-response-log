@@ -1,11 +1,11 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Kartaca.Intern.Models;
-using Kartaca.Intern.Services;
+using Kafka.Example.Models;
+using Kafka.Example.Services;
 using Microsoft.AspNetCore.Http;
 
-namespace Kartaca.Intern.Middlewares
+namespace Kafka.Example.Middlewares
 {
     public class TimeTrackerMiddleware
     {

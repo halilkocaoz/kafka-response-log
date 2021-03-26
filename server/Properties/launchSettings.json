@@ -16,7 +16,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Kartaca.Intern": {
+    "Kafka.Example": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": false,
