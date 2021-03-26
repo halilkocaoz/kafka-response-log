@@ -5,7 +5,7 @@ namespace Kartaca.Intern.Services
 {
     public class FileLogService : ILogService
     {
-        private string logFilePath = "./response_log";
+        private readonly string logFilePath = "./response_log";
         private readonly ILogger _logger;
 
         public FileLogService(ILogger<FileLogService> logger)
@@ -19,9 +19,8 @@ namespace Kartaca.Intern.Services
             if (File.Exists(logFilePath) is false)
             {
                 _logger.LogWarning("Log file isn't found.");
-                var stream = File.Create("./response_log");
+                File.Create("./response_log").DisposeAsync();
                 _logger.LogInformation($"New log file created: {Path.GetFullPath(logFilePath)}");
-                stream.DisposeAsync();
             }
         }
 
