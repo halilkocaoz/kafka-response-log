@@ -57,7 +57,7 @@ You can use the `http://localhost:1923/` address for reaching the dashboard.
 ## Docs
 
 ## ASP.NET 5 Web API
-You can see the ASP.NET 5 Web API project in [this directory](https://github.com/halilkocaoz/kafka-response-time-tracking/tree/main/server/Kafka.Example).
+You can see the ASP.NET 5 Web API project in [this directory](https://github.com/halilkocaoz/kafka-response-log/tree/main/server/).
 
 The project has two end-point paths,
 
@@ -100,7 +100,7 @@ If there is no request that made to `/api/products` in the last hour, it returns
 ```
 
 ### /api/products
-An endpoint path that presents GET, POST, PUT and DELETE methods. That endpoints are for creating dummy data to log. All of the methods have [delayer](https://github.com/halilkocaoz/kafka-response-time-tracking/tree/main/server/Filters/Delayer.cs) middleware (known as ActionFilterAttribute in the .NET ecosystem).
+An endpoint path that presents GET, POST, PUT and DELETE methods. That endpoints are for creating dummy data to log. All of the methods have [delayer](https://github.com/halilkocaoz/kafka-response-log/tree/main/server/Filters/Delayer.cs) middleware (known as ActionFilterAttribute in the .NET ecosystem).
 
 #### Using the /api/products endpoint
 The `/api/products` path supports to GET, POST, PUT, DELETE methods. You can use the `http://localhost:1923/api/products` address for your requests. <br>
@@ -111,7 +111,7 @@ All of the above methods return 204, other 405.
 <hr>
 
 ## Go Project : Kafka Consumer and Database Updater
-You can look at the Go Project from [here](https://github.com/halilkocaoz/kafka-response-time-tracking/tree/main/consumer). It consumes the messages which are coming from ASP.NET Web API and writes those messages to the database.
+You can look at the Go Project from [here](https://github.com/halilkocaoz/kafka-response-log/tree/main/consumer). It consumes the messages which are coming from ASP.NET Web API and writes those messages to the database.
 
 ### Working Principle of Go Project
 It collects the messages from the `response_log` topic as `go-consumer` and it accumulates that data in a fixed size string array called `kafkaMessages`. This array's size was fixed using `maxMessageCountToAccumulate` const variable and consumer collects messages until `receivedMessageCount` reaches `maxMessageCountToAccumulate`.
