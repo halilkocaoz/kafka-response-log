@@ -26,10 +26,11 @@ namespace Kartaca.Intern.Services
                 try
                 {
                     await producer.ProduceAsync(topic, message);
+                    _logger.LogInformation($"{responseLog.Message} has been sent to {topic} topic.");
                 }
                 catch (KafkaException e)
                 {
-                   _logger.LogWarning(e.Error.Reason);
+                    _logger.LogWarning(e.Error.Reason);
                 }
             }
         }
