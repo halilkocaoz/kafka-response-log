@@ -24,6 +24,7 @@ namespace Kartaca.Intern
                 });
             });
             services.AddTransient<KafkaLogService>();
+            services.AddTransient<FileLogService>();
             services.AddControllers().AddJsonOptions(jsonOptions =>
             {
                 jsonOptions.JsonSerializerOptions.IgnoreNullValues = true;

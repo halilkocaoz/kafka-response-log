@@ -9,17 +9,21 @@ namespace Kartaca.Intern.Middlewares
 {
     public class TimeTrackerMiddleware
     {
-        private readonly KafkaLogService _kafkaLogService;
+        private readonly ILogService _kafkaLogService;
+        private readonly ILogService _fileLogService;
         private readonly RequestDelegate _next;
-        public TimeTrackerMiddleware(RequestDelegate next, KafkaLogService kafkaLogService)
+        private readonly string[] toBeTrackedPaths = { "/api/products", "/api/products/" };
+
+        public TimeTrackerMiddleware(RequestDelegate next, KafkaLogService kafkaLogService, FileLogService fileLogService)
         {
             _next = next;
             _kafkaLogService = kafkaLogService;
+            _fileLogService = fileLogService;
         }
-        private readonly string[] toBeTrackedPaths = { "/api/products", "/api/products/" };
 
         public async Task InvokeAsync(HttpContext httpContext)
         {
+
             var requestedPath = httpContext.Request.Path.ToString().ToLower();
             if (toBeTrackedPaths.Any(paths => paths == requestedPath))
             {
@@ -28,11 +32,11 @@ namespace Kartaca.Intern.Middlewares
                 await _next(httpContext);
                 stopwatch.Stop();
 
-                if (httpContext.Response.StatusCode != 405 && httpContext.Response.StatusCode != 404)
+                if (httpContext.Response.StatusCode != 405)
                 {
-                    _kafkaLogService.SendAsync(
-                        new ResponseLog(httpContext.Request.Method,
-                        stopwatch.ElapsedMilliseconds));
+                    var responseLog = new ResponseLog(httpContext.Request.Method, stopwatch.ElapsedMilliseconds);
+                    _fileLogService.SendAsync(responseLog);
+                    _kafkaLogService.SendAsync(responseLog);
                 }
             }
             else

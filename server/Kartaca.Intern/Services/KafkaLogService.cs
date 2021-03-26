@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Kartaca.Intern.Services
 {
-    public class KafkaLogService
+    public class KafkaLogService : ILogService
     {
         private readonly ILogger _logger;
         private const string topic = "response_log";

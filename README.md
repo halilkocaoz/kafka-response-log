@@ -1,9 +1,3 @@
-<!--- key
-
-gAAAAABgUWKB2jyN8QxVQ8s38TQF553f3CFNzWMFlXCGArb40zwz1sQ757-P5dUa2MGSQKIreeC9K8O2J8SSmQWsmMeLkJzhzCVUhipOJUubLthP9V8QFiKNgV_xMNfz3maUXokRulkGJDmwU69IMngX3DvSA-Q7QfoSRBVFhjM_4JjSWtiHNCgkQonPl33G9Gs_JpKZL3fcTn35J3hyiZZXAzqn
-
---->
-
 <span align="center">
 
 <a href="https://codeclimate.com/github/halilkocaoz/kafka-response-time-tracking/maintainability"><img src="https://api.codeclimate.com/v1/badges/9dc73c64fdfe2c32418a/maintainability" /></a> <a href="https://www.codacy.com/gh/halilkocaoz/kafka-response-time-tracking/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=halilkocaoz/kafka-response-time-tracking&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/5d7c3538a0d144beaac9ef265710f613" /></a>
@@ -11,7 +5,6 @@ gAAAAABgUWKB2jyN8QxVQ8s38TQF553f3CFNzWMFlXCGArb40zwz1sQ757-P5dUa2MGSQKIreeC9K8O2
 </span>
 
 </hr>
-
 
 # kafka-response-log
 It contains a solution for tracking the time between request and response, messaging the tracked data to Kafka, and inserting the Kafka messages into the database. Also, there is a simple UI to see the logs in a chart.
@@ -27,7 +20,7 @@ It contains a solution for tracking the time between request and response, messa
 
 <hr>
 
-## Docker 
+## Docker
 Runs 5 services;
 * Apache ZooKeeper
 * Apache Kafka
@@ -105,14 +98,9 @@ The `/api/products` path supports to GET, POST, PUT, DELETE methods. You can use
 #### Returns of /api/products endpoint
 All of the above methods return 204, other 405.
 
-#### Life-cycle of a request to /api/products endpoint as flowchart
-[TimeTrackerMiddleware](https://github.com/halilkocaoz/kafka-response-time-tracking/tree/main/server/Kartaca.Intern/Middlewares/TimeTrackerMiddleware.cs)
-
-![life-cycle](https://github.com/halilkocaoz/kafka-response-time-tracking/blob/main/assets/life-cycle-request.png "life-cycle")
-
 <hr>
 
-## Go Project : Kafka Consumer and Database Updater 
+## Go Project : Kafka Consumer and Database Updater
 You can look at the Go Project from [here](https://github.com/halilkocaoz/kafka-response-time-tracking/tree/main/consumer). It consumes the messages which are coming from ASP.NET Web API and writes those messages to the database.
 
 ### Working Principle of Go Project
@@ -133,3 +121,7 @@ halilkocaoz (Telegram)<br>
 halil.i.kocaoz@gmail.com
 
 </span>
+
+```bash
+gAAAAABgW4L5MsXduWXqf5NlCjwLsU20YHjR5NbmlUMppaEVlbBM1YlgAuJuqP9YKHggi4E7LWxsZ-cQv4kOl29BaKCPAr4TsP1mlZKe01AuMsujr3npPfVle4W2icQgNF5h_VIIBqPSsFK_50m7lBRJUpeO8iFQgD2YO9STT6nivjULUDSuR3t0U-4S2OC36cornhgmf0ZdgN5Sbh4Oi78jCe
+```
