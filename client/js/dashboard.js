@@ -25,6 +25,8 @@ function seperateData(data) {
     });
 }
 
+var statusTitle = document.getElementById('statusTitle');
+
 function fetchData() {
     fetch('http://localhost:1923/health/api/products')
         .then(response => {
@@ -33,15 +35,19 @@ function fetchData() {
                     .then(function (data) {
                         seperateData(data);
                         updateChart();
-                        setTimeout(fetchData, UpdateTimeoutMs);
+                        statusTitle.innerHTML = "";
                     });
             }
             else if (response.status === 204) {
-                //alert("There is no committed data for requests to /api/products in the last hour.");
-                setTimeout(fetchData, UpdateTimeoutMs);
+                statusTitle.innerHTML = "There is no committed data for requests to /api/products in the last hour.";
             }
+            setTimeout(fetchData, UpdateTimeoutMs);
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            console.log(err);
+            statusTitle.innerHTML = "Server could be down";
+            setTimeout(fetchData, UpdateTimeoutMs);
+        });
 }
 drawChart();
 fetchData();
