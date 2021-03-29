@@ -10,6 +10,13 @@ import (
 	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
 )
 
+var kafkaTopics = []string{"response_log"}
+var kafkaMessages [maxMessageCountToAccumulate]string
+var receivedMessageCount = 0
+
+var consumer *kafka.Consumer
+var db *sql.DB
+
 const (
 	maxMessageCountToAccumulate = 10
 	insertStatement             = `INSERT INTO net_logs (method, elapsed_time, timestamputc) VALUES ($1, $2, $3)`
@@ -17,29 +24,29 @@ const (
 	databaseUser                = "postgres"
 	databasePass                = "psqlpass"
 	databaseServer              = "postgres:5432"
+	kafkaServer                 = "kafka:9092"
 )
 
-func checkDatabase() *sql.DB {
+func checkDatabase() {
 	fmt.Println("SQL Open")
-	db, err := sql.Open("postgres", "postgres://"+databaseUser+":"+databasePass+"@"+databaseServer+"/"+database+"?sslmode=disable")
+	var err error
+	db, err = sql.Open("postgres", "postgres://"+databaseUser+":"+databasePass+"@"+databaseServer+"/"+database+"?sslmode=disable")
 	if err != nil {
-		fmt.Println(err.Error())
+		panic(err)
 	}
 
 	fmt.Println("SQL Open: OK")
 
 	err = db.Ping()
 	if err != nil {
-		fmt.Println(err.Error())
+		panic(err)
 	}
 
 	fmt.Println("Database PING: OK")
-
-	return db
 }
 
-func setDatabase() *sql.DB {
-	db := checkDatabase()
+func setDatabase() {
+	checkDatabase()
 
 	_, err := db.Exec(`create table if not exists net_logs
 	(
@@ -51,22 +58,15 @@ func setDatabase() *sql.DB {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-
-	return db
 }
 
-var consumer *kafka.Consumer
-var db *sql.DB
-
-func main() {
-	time.Sleep(10 * time.Second)
-	db = setDatabase()
-	defer db.Close()
+func createConsumer() {
 	consumerCreatingRepeatTime := 0
 
 consumerCreateStatement:
-	cnsmr, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": "kafka:9092",
+	var err error
+	consumer, err = kafka.NewConsumer(&kafka.ConfigMap{
+		"bootstrap.servers": kafkaServer,
 		"group.id":          "go-consumer",
 		"auto.offset.reset": "earliest",
 	})
@@ -82,25 +82,9 @@ consumerCreateStatement:
 			panic(err)
 		}
 	}
-	consumer = cnsmr
-
-subscribeStatement:
-	err = consumer.SubscribeTopics([]string{"response_log"}, nil)
-
-	if err == nil {
-		fmt.Println("Consumer subscribed the topic")
-	} else {
-		fmt.Println(err.Error() + "\n Trying again")
-		goto subscribeStatement
-	}
-
-	startConsuming()
 }
 
 func startConsuming() {
-	receivedMessageCount := 0
-	var kafkaMessages [maxMessageCountToAccumulate]string
-
 	for {
 		kafkaMessage, err := consumer.ReadMessage(-100)
 		if err != nil {
@@ -111,18 +95,17 @@ func startConsuming() {
 			receivedMessageCount++
 
 			if receivedMessageCount >= maxMessageCountToAccumulate {
-				commitMessagesDatabase(kafkaMessages)
-				receivedMessageCount = 0
+				commitMessagesDatabase()
 			}
 		}
 	}
 }
 
-func commitMessagesDatabase(messages [maxMessageCountToAccumulate]string) {
+func commitMessagesDatabase() {
 	dbTransaction, _ := db.Begin()
 
 	for i := 0; i < maxMessageCountToAccumulate; i++ {
-		splittedMsg := strings.Split(messages[i], " ")
+		splittedMsg := strings.Split(kafkaMessages[i], " ")
 		dbTransaction.Exec(insertStatement,
 			splittedMsg[0], // method
 			splittedMsg[1], // elapsed time
@@ -135,7 +118,27 @@ func commitMessagesDatabase(messages [maxMessageCountToAccumulate]string) {
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {
-		fmt.Printf("Last received %d messages committed\n", maxMessageCountToAccumulate)
+		fmt.Printf("The last %d messages that received has been committed.\n", maxMessageCountToAccumulate)
+		receivedMessageCount = 0
+	}
+}
+
+func main() {
+	time.Sleep(10 * time.Second)
+	setDatabase()
+	defer db.Close()
+
+	createConsumer()
+
+subscribeStatement:
+	err := consumer.SubscribeTopics(kafkaTopics, nil)
+
+	if err == nil {
+		fmt.Println("Consumer subscribed the topic")
+	} else {
+		fmt.Println(err.Error() + "\n Trying again")
+		goto subscribeStatement
 	}
 
+	startConsuming()
 }
