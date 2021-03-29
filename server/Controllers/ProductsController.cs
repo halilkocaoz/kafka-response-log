@@ -5,6 +5,7 @@ namespace Kafka.Example.Controllers
 {
     [ApiController]
     [Route("api/[Controller]")]
+    [ServiceFilter(typeof(TimeTracker))]
     [Delayer(3000)]
     public class ProductsController : ControllerBase
     {

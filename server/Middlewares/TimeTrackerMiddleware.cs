@@ -23,7 +23,6 @@ namespace Kafka.Example.Middlewares
 
         public async Task InvokeAsync(HttpContext httpContext)
         {
-
             var requestedPath = httpContext.Request.Path.ToString().ToLower();
             if (toBeTrackedPaths.Any(paths => paths == requestedPath))
             {

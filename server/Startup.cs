@@ -1,4 +1,4 @@
-using Kafka.Example.Middlewares;
+using Kafka.Example.Filters;
 using Kafka.Example.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -24,17 +24,19 @@ namespace Kafka.Example
                     builder.AllowAnyOrigin();
                 });
             });
-            services.AddTransient<KafkaLogService>();
-            services.AddTransient<FileLogService>();
-            services.AddControllers(x => x.AllowEmptyInputInBodyModelBinding = true).AddJsonOptions(jsonOptions =>
-              {
-                  jsonOptions.JsonSerializerOptions.IgnoreNullValues = true;
-              });
+            services.AddScoped<KafkaLogService>();
+            services.AddScoped<FileLogService>();
+            services.AddScoped<TimeTracker>();
+
+            services.AddControllers().AddJsonOptions(jsonOptions =>
+            {
+                jsonOptions.JsonSerializerOptions.IgnoreNullValues = true;
+            });
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors();
-            app.UseMiddleware<TimeTrackerMiddleware>();
+            //app.UseMiddleware<TimeTrackerMiddleware>();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseRouting();
