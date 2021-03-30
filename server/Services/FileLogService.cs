@@ -1,25 +1,27 @@
 using Kafka.Example.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.IO;
 namespace Kafka.Example.Services
 {
     public class FileLogService : ILogService
     {
-        private readonly string logFilePath = "./response_log";
+        private readonly string logFilePath = "./";
         private readonly ILogger _logger;
 
-        public FileLogService(ILogger<FileLogService> logger)
+        public FileLogService(ILogger<FileLogService> logger, IConfiguration configuration)
         {
             _logger = logger;
+            logFilePath += configuration["Kafka:Topic"];
             checkAndCreateLogFileIfNotExist();
         }
 
         private void checkAndCreateLogFileIfNotExist()
         {
-            if (File.Exists(logFilePath) is false)
+            if (!File.Exists(logFilePath))
             {
                 _logger.LogWarning("Log file isn't found.");
-                File.Create("./response_log").DisposeAsync();
+                File.Create(logFilePath).DisposeAsync();
                 _logger.LogInformation($"New log file created: {Path.GetFullPath(logFilePath)}");
             }
         }

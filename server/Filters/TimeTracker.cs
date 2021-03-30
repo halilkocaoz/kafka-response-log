@@ -2,19 +2,18 @@ using System;
 using Kafka.Example.Models;
 using Kafka.Example.Services;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Logging;
 
 namespace Kafka.Example.Filters
 {
     public class TimeTracker : ActionFilterAttribute
     {
-        private readonly ILogService _kafkaLogService;
-        private readonly ILogService _fileLogService;
+        private readonly KafkaLogService _kafkaLogService;
+        private readonly FileLogService _fileLogService;
 
-        public TimeTracker(ILoggerFactory loggerFactory)
+        public TimeTracker(KafkaLogService kafkaLogService, FileLogService fileLogService)
         {
-            _kafkaLogService = new KafkaLogService(loggerFactory.CreateLogger<KafkaLogService>());
-            _fileLogService = new FileLogService(loggerFactory.CreateLogger<FileLogService>());
+            _kafkaLogService = kafkaLogService;
+            _fileLogService = fileLogService;
         }
 
         public override void OnActionExecuting(ActionExecutingContext context) =>
