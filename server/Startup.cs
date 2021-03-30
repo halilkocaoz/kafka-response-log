@@ -1,9 +1,8 @@
-using Kafka.Example.Filters;
-using Kafka.Example.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Kafka.Example.Extensions;
 
 namespace Kafka.Example
 {
@@ -24,9 +23,8 @@ namespace Kafka.Example
                     builder.AllowAnyOrigin();
                 });
             });
-            services.AddScoped<KafkaLogService>();
-            services.AddScoped<FileLogService>();
-            services.AddScoped<TimeTracker>();
+
+            services.AddDepencies();
 
             services.AddControllers().AddJsonOptions(jsonOptions =>
             {
@@ -36,7 +34,6 @@ namespace Kafka.Example
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors();
-            //app.UseMiddleware<TimeTrackerMiddleware>();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseRouting();
