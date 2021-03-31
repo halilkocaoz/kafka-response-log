@@ -36,7 +36,7 @@ function updateChart() {
     chart.update();
 }
 
-function averageByTimestamp(data) {
+function groupAverageByTimestamp(data) {
     var newData = [];
     for (let firstIndex = 0; firstIndex < data.length; firstIndex++) {
         const firstElement = data[firstIndex];
@@ -77,7 +77,7 @@ function averageByTimestamp(data) {
 
 function getAsChartData(data) {
     let chartData = new Int32Array(60);
-    data = averageByTimestamp(data);
+    data = groupAverageByTimestamp(data);
     data.forEach(element => {
         chartData[chartLabels.indexOf(element.timestamp)] = element.elapsedTime;
     });
