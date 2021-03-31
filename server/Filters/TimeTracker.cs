@@ -21,11 +21,11 @@ namespace Kafka.Example.Filters
 
         public override void OnResultExecuted(ResultExecutedContext context)
         {
+            var timeAfterProcessEndpoint = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             if (context.HttpContext.Response.StatusCode != 405)
             {
-                var nowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                var elapsedTime = nowTime - long.Parse(context.RouteData.Values["timeBeforeActionExecute"].ToString());
-                
+                var elapsedTime = timeAfterProcessEndpoint - long.Parse(context.RouteData.Values["timeBeforeActionExecute"].ToString());
+
                 var responseLog = new ResponseLog(context.HttpContext.Request.Method, elapsedTime);
                 _fileLogService.SendAsync(responseLog);
                 _kafkaLogService.SendAsync(responseLog);
