@@ -1,9 +1,10 @@
 version: '3.3'
 
 services:
-  zookeper:
+  zookeeper:
     image: confluentinc/cp-zookeeper
-    container_name: zookeper
+    container_name: zookeeper
+    restart: always
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -22,15 +23,15 @@ services:
     image: confluentinc/cp-kafka
     container_name: kafka
     depends_on:
-      - zookeper
+      - zookeeper
     healthcheck:
-      test: "/usr/bin/kafka-topics --list --zookeeper zookeper:2181"
+      test: "/usr/bin/kafka-topics --list --zookeeper zookeeper:2181"
     ports:
       - "19092:19092"
-    restart: always ####
+    restart: always
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092, CONNECTIONS_FROM_HOST://localhost:19092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONNECTIONS_FROM_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
@@ -44,9 +45,11 @@ services:
   web-net:
     build: "."
     container_name: net-webapi
+    restart: always
     ports:
       - "1923:80"
   
   consumer-go:
     build: ./consumer
     container_name: consumer-go
+    restart: always
