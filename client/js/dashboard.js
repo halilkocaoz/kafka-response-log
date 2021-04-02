@@ -11,7 +11,7 @@ function seperateData(data) {
     putData = [];
     deleteData = [];
     data.forEach(element => {
-        element.timestamp = convertUnixToHourMinute(element.timestamp);
+        element.timestamp = takeHHMM(element.timestamp);
         if (element.method === "GET") {
             getData.push(element);
         } else if (element.method === "POST") {

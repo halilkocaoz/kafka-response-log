@@ -84,8 +84,16 @@ function getAsChartData(data) {
     return chartData;
 }
 
-function convertUnixToHourMinute(timestamp) {
-    return moment.unix(timestamp).format("kk:mm");
+function addZero(val) {
+    if (val < 10) {
+        val = "0" + val;
+    }
+    return val;
+}
+
+function takeHHMM(timestampSecond) {
+    var d = new Date(timestampSecond * 1000);
+    return addZero(d.getHours()) + ":" + addZero(d.getMinutes());
 }
 
 function createChartLabel() {
@@ -93,10 +101,10 @@ function createChartLabel() {
     var nowDate = new Date();
     nowDate.setSeconds(0);
     nowDate.setMilliseconds(0);
-    var oneHourAgo = nowDate.getTime() - (1000 * 60 * 59) ;
+    var oneHourAgo = nowDate.getTime() - (1000 * 60 * 59);
 
     for (let time = oneHourAgo; time <= nowDate.getTime(); time += 60000) {
-        chartLabels.push(convertUnixToHourMinute(time / 1000));
+        chartLabels.push(takeHHMM(time / 1000));
     }
 
     return chartLabels;
