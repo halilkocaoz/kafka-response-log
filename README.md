@@ -29,11 +29,9 @@ Runs 5 services;
 * Go Project : Kafka Consumer and Database Updater 
 * Postgres Database
 
-First time:
 ```bash
 docker-compose up --build
 ```
-Afer the first time:
 ```bash
 docker-compose up
 ```
@@ -41,7 +39,7 @@ docker-compose up
 <hr>
 
 ## Automatization of the requests with Shell and curl
-[request.sh](https://github.com/halilkocaoz/kafka-response-log/tree/main/request.sh) provides to automate the requests but it needs Bash or any shell script runner and curl.
+[request.sh](https://github.com/halilkocaoz/kafka-response-log/tree/main/request.sh) provides to automate the requests but it needs shell script runner and curl.
 
 ```bash
 ./request.sh
@@ -68,8 +66,7 @@ The project has two end-point paths,
 This endpoint path presents the following data about requests to `/api/products` in the last hour;
 * HTTP Method
 * Elapsed time to response
-* When was it requested?
-
+* When was it logged?
 
 #### Using the /health/api/products endpoint
 GET : `http://localhost:1923/health/api/products`
@@ -85,12 +82,12 @@ If there is no request that made to `/api/products` in the last hour, it returns
     "method": "GET",
     "elapsedTime": 375,
     "timestamputc": 1616368665
-  }
+  },
   {
     "method": "GET",
     "elapsedTime": 200,
     "timestamputc": 1616368655
-  }
+  },
   {
     "method": "PUT",
     "elapsedTime": 1200,
@@ -111,12 +108,12 @@ All of the above methods return 204, other 405.
 <hr>
 
 ## Go Project : Kafka Consumer and Database Updater
-You can look at the Go Project from [here](https://github.com/halilkocaoz/kafka-response-log/tree/main/consumer). It consumes the messages which are coming from ASP.NET Web API and writes those messages to the database.
+You can look at the Go Project from [here](https://github.com/halilkocaoz/kafka-response-log/tree/main/consumer). It consumes the kafka messages and writes those messages to the database.
 
 ### Working Principle of Go Project
-It collects the messages from the `response_log` topic as `go-consumer` and it accumulates that data in a fixed size string array called `kafkaMessages`. This array's size was fixed using `maxMessageCountToAccumulate` const variable and consumer collects messages until `receivedMessageCount` reaches `maxMessageCountToAccumulate`.
+It collects the messages from the `response_log` topic as `go-consumer` and it accumulates that data in a fixed size string array called `kafkaMessages`. This array's size is fixed using `maxMessageCountToAccumulate` variable and consumer collects messages until `receivedMessageCount` reaches `maxMessageCountToAccumulate`.
 
-If `receivedMessageCount` >= `maxMessageCountToAccumulate`, write to database method runs and it inserts all of the collected messages into the database with **one transaction**. After then, `receivedMessageCount` sets to zero and the consumer continues to collect data from last offset until again repeat.
+If `receivedMessageCount` >= `maxMessageCountToAccumulate`, write to database method runs and it inserts all of the collected messages into the database with **one transaction**. After then, `receivedMessageCount` sets to zero and the consumer resumes to collect data from last offset until again repeat.
 
 ### The consumer doesn't immediately insert received messages from Kafka into the database
 As I mentioned above, the `receivedMessageCount` must reach `maxMessageCountToAccumulate` to start the database transaction and insert received messages with a single transaction.
