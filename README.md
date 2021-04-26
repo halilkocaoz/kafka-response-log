@@ -7,7 +7,7 @@
 </hr>
 
 # kafka-response-log
-It contains a solution for tracking the time between request and response, messaging the tracked data to Kafka, and inserting the Kafka messages into the database. Also, there is a simple UI to see the logs in a chart.
+It contains a solution for tracking the request processing time, messaging the tracked data to Kafka, and inserting the Kafka messages into the database. Also, there is a simple UI to see the logs in a chart.
 
 <hr>
 
@@ -105,18 +105,3 @@ If `receivedMessageCount` >= `maxMessageCountToAccumulate`, write to database me
 
 ### The consumer doesn't immediately insert received messages from Kafka into the database
 As I mentioned above, the `receivedMessageCount` must reach `maxMessageCountToAccumulate` to start the database transaction and insert received messages with a single transaction.
-
-<hr>
-
-<span align="center">
-
-## Contact
-
-halilkocaoz (Telegram)<br>
-halil.i.kocaoz@gmail.com
-
-</span>
-
-```bash
-gAAAAABgW4L5MsXduWXqf5NlCjwLsU20YHjR5NbmlUMppaEVlbBM1YlgAuJuqP9YKHggi4E7LWxsZ-cQv4kOl29BaKCPAr4TsP1mlZKe01AuMsujr3npPfVle4W2icQgNF5h_VIIBqPSsFK_50m7lBRJUpeO8iFQgD2YO9STT6nivjULUDSuR3t0U-4S2OC36cornhgmf0ZdgN5Sbh4Oi78jCeo1UnJu3w==
-```
