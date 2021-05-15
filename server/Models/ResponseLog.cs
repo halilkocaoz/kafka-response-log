@@ -8,7 +8,7 @@ namespace Kafka.Example.Models
         {
             Method = method;
             ElapsedTime = elapsedTime;
-            Message = $"{Method} {ElapsedTime} {DateTimeOffset.UtcNow.ToUnixTimeSeconds()}".ToUpper();
+            Message = $"{Method} {ElapsedTime} {DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}".ToUpper();
         }
         public ResponseLog(string method, long elapsedTime, long timestamp)
         {
@@ -19,7 +19,7 @@ namespace Kafka.Example.Models
 
         public string Method { get; set; }
         public long ElapsedTime { get; set; }
-        public string Message { get; set; }
+        public string Message { get; private set; }
         public long Timestamp { get; set; }
     }
 }
