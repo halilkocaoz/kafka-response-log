@@ -91,21 +91,22 @@ function addZero(val) {
     return val;
 }
 
-function takeHHMM(timestampSecond) {
-    var d = new Date(timestampSecond * 1000);
+function takeHHMM(timestampInMs) {
+    var d = new Date(timestampInMs);
     return addZero(d.getHours()) + ":" + addZero(d.getMinutes());
 }
 
 function createChartLabel() {
     chartLabels = [];
+
     var nowDate = new Date();
     nowDate.setSeconds(0);
     nowDate.setMilliseconds(0);
     var oneHourAgo = nowDate.getTime() - (1000 * 60 * 59);
+    var aMinute = 60000;
 
-    for (let time = oneHourAgo; time <= nowDate.getTime(); time += 60000) {
-        chartLabels.push(takeHHMM(time / 1000));
+    for (let timestamp = oneHourAgo; timestamp <= nowDate.getTime(); timestamp += aMinute) {
+        chartLabels.push(takeHHMM(timestamp));
     }
-
     return chartLabels;
 }
