@@ -1,11 +1,3 @@
-<span align="center">
-
-<a href="https://codeclimate.com/github/halilkocaoz/kafka-response-log/maintainability"><img src="https://api.codeclimate.com/v1/badges/d1364da3e1590a452ab9/maintainability" /></a> <a href="https://www.codacy.com/gh/halilkocaoz/kafka-response-log/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=halilkocaoz/kafka-response-log&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/5d7c3538a0d144beaac9ef265710f613"/></a>
-
-</span>
-
-</hr>
-
 # kafka-response-log
 It contains a solution for tracking the request processing time, messaging the tracked data to Kafka, and inserting the Kafka messages into the database. Also, there is a simple UI to see the logs in a chart.
 
