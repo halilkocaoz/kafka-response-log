@@ -5,25 +5,20 @@ using Microsoft.Extensions.Logging;
 
 namespace Kafka.Example.Services
 {
-    public class KafkaLogService : ILogService
+    public class KafkaLogService : LogService
     {
-        private readonly ILogger _logger;
-        private readonly string topic;
-        private const string server = "kafka:9092";
-        private readonly ProducerConfig producerConfig = new ProducerConfig
+        private readonly static ProducerConfig producerConfig = new ProducerConfig
         {
-            BootstrapServers = server,
+            BootstrapServers = "kafka:9092",
             MessageTimeoutMs = 1000,
             Acks = Acks.None
         };
 
-        public KafkaLogService(ILogger<KafkaLogService> logger, IConfiguration configuration)
+        public KafkaLogService(ILogger<KafkaLogService> logger, IConfiguration configuration) : base(logger, configuration)
         {
-            topic = configuration["Kafka:Topic"];
-            _logger = logger;
         }
-        
-        public async void SendAsync(ResponseLog responseLog)
+
+        public override async void SendAsync(ResponseLog responseLog)
         {
             var message = new Message<string, string> { Value = responseLog.Message };
             using (var producer = new ProducerBuilder<string, string>(producerConfig).SetValueSerializer(Serializers.Utf8).Build())

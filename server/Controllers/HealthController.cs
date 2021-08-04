@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Kafka.Example.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -17,8 +18,7 @@ namespace Kafka.Example.Controllers
 
         public HealthController(IConfiguration configuration) => npgsqlConnection = new NpgsqlConnection(configuration["Database:ConnectionString"]);
 
-        [Route("products")]
-        [HttpGet()]
+        [HttpGet("products")]
         public async Task<IActionResult> ProductsHealth()
         {
             await npgsqlConnection.OpenAsync();
@@ -33,7 +33,7 @@ namespace Kafka.Example.Controllers
             #pragma warning disable CS4014
             npgsqlConnection.CloseAsync();
 
-            return logs?.Count > 0 ? Ok(logs) : NoContent();
+            return logs != null && logs.Any() ? Ok(logs) : NoContent();
         }
     }
 }

@@ -4,19 +4,17 @@ using Microsoft.Extensions.Logging;
 using System.IO;
 namespace Kafka.Example.Services
 {
-    public class FileLogService : ILogService
+    public class FileLogService : LogService
     {
         private readonly string logFilePath = "./";
-        private readonly ILogger _logger;
 
-        public FileLogService(ILogger<FileLogService> logger, IConfiguration configuration)
+        public FileLogService(ILogger<FileLogService> logger, IConfiguration configuration) : base(logger, configuration)
         {
-            _logger = logger;
-            logFilePath += configuration["Kafka:Topic"];
-            checkAndCreateLogFileIfNotExist();
+            logFilePath += topic;
+            createLogFileIfNotExist();
         }
 
-        private void checkAndCreateLogFileIfNotExist()
+        private void createLogFileIfNotExist()
         {
             if (!File.Exists(logFilePath))
             {
@@ -26,7 +24,7 @@ namespace Kafka.Example.Services
             }
         }
 
-        public void SendAsync(ResponseLog responseLog)
+        public override void SendAsync(ResponseLog responseLog)
         {
             using (var writer = new StreamWriter(logFilePath, true))
             {

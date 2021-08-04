@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"strings"
 	"time"
 
@@ -95,7 +94,7 @@ consuming:
 	err := consumeAndInsertMessages(consumer, db)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 		goto consuming
 	}
 }
