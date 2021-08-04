@@ -3,6 +3,8 @@ It contains a solution for tracking the request processing time, messaging the t
 
 <hr>
 
+![demo](./assets/demo.gif "demo")
+
 ## Table of contents
 * [Docker](#docker)
 * [Automatization of the requests with Shell and curl](#automatization-of-the-requests-with-shell-and-curl)

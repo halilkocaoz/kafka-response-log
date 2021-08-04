@@ -18,7 +18,9 @@ services:
     environment:
       POSTGRES_DB: postgres
       POSTGRES_PASSWORD: psqlpass
-  
+    volumes:
+        - $HOME/docker/volumes/kafka-response-log-postgres:/var/lib/postgresql/data
+
   kafka:
     image: confluentinc/cp-kafka
     container_name: kafka
@@ -43,7 +45,9 @@ services:
     command: "bash -c 'echo creating topics && \ kafka-topics --bootstrap-server kafka:9092 --create --topic response_log'"
 
   web-net:
-    build: "."
+    build:
+      context: ./
+      dockerfile: Server.Dockerfile
     container_name: net-webapi
     restart: always
     ports:
