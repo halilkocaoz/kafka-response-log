@@ -10,7 +10,6 @@ namespace Kafka.Example.Middlewares
     public class ResponseLoggerMiddleware
     {
         private readonly RequestDelegate _next;
-        private long _timeBeforeActionExecute;
 
         public ResponseLoggerMiddleware(RequestDelegate next)
         {
@@ -20,15 +19,17 @@ namespace Kafka.Example.Middlewares
         public async Task Invoke(HttpContext httpContext, KafkaLogService kafkaLogService, FileLogService fileLogService)
         {
             await _next(httpContext);
+            
             /// <see cref="TimeTracker"/>
-            _timeBeforeActionExecute = httpContext.Items["timeBeforeActionExecute"] != null
-            ? (long)httpContext.Items["timeBeforeActionExecute"]
+            
+            var timeBeforeProcessEndpoint = httpContext.Items["timeBeforeProcessEndpoint"] != null
+            ? (long)httpContext.Items["timeBeforeProcessEndpoint"]
             : default;
 
-            if (_timeBeforeActionExecute != default)
+            if (timeBeforeProcessEndpoint != default)
             {
                 var timeAfterProcessEndpoint = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                var elapsedTime = timeAfterProcessEndpoint - _timeBeforeActionExecute;
+                var elapsedTime = timeAfterProcessEndpoint - timeBeforeProcessEndpoint;
 
                 var responseLog = new ResponseLog(httpContext.Request.Method, elapsedTime);
 

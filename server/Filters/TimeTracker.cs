@@ -6,6 +6,6 @@ namespace Kafka.Example.Filters
     public class TimeTracker : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context) =>
-        context.HttpContext.Items["timeBeforeActionExecute"] = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        context.HttpContext.Items["timeBeforeProcessEndpoint"] = DateTimeOffset.Now.ToUnixTimeMilliseconds();
     }
 }
