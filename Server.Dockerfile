@@ -12,7 +12,7 @@ RUN dotnet publish --no-restore -c Release -o /app --no-cache /restore
 FROM mcr.microsoft.com/dotnet/aspnet:5.0
 WORKDIR /app
 # copy ui to work on web-server
-COPY ./client ./client
+COPY ./client ./wwwroot
 
 COPY --from=build /app ./
 ENTRYPOINT ["dotnet", "Kafka.Example.dll"]
