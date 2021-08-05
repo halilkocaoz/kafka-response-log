@@ -2,6 +2,8 @@ using Kafka.Example.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.IO;
+using System.Threading.Tasks;
+
 namespace Kafka.Example.Services
 {
     public class FileLogService : LogService
@@ -23,12 +25,12 @@ namespace Kafka.Example.Services
                 _logger.LogInformation($"New log file created: {Path.GetFullPath(logFilePath)}");
             }
         }
-
-        public override void SendAsync(ResponseLog responseLog)
+        
+        public override async Task SendAsync(ResponseLog responseLog)
         {
             using (var writer = new StreamWriter(logFilePath, true))
             {
-                writer.WriteLineAsync(responseLog.Message);
+                await writer.WriteLineAsync(responseLog.Message);
             }
             _logger.LogInformation($"{responseLog.Message} has been written to {logFilePath} file.");
         }

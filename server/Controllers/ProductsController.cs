@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Kafka.Example.Controllers
 {
-    [ServiceFilter(typeof(TimeTracker))]
+    [TimeTracker]
     [ApiController]
     [Route("api/[Controller]")]
     [Delayer(3000)]

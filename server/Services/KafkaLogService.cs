@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Confluent.Kafka;
 using Kafka.Example.Models;
 using Microsoft.Extensions.Configuration;
@@ -13,14 +14,16 @@ namespace Kafka.Example.Services
             MessageTimeoutMs = 1000,
             Acks = Acks.None
         };
+        private static Message<string, string> message;
 
         public KafkaLogService(ILogger<KafkaLogService> logger, IConfiguration configuration) : base(logger, configuration)
         {
         }
 
-        public override async void SendAsync(ResponseLog responseLog)
+        public override async Task SendAsync(ResponseLog responseLog)
         {
-            var message = new Message<string, string> { Value = responseLog.Message };
+            message = new Message<string, string> { Value = responseLog.Message };
+
             using (var producer = new ProducerBuilder<string, string>(producerConfig).SetValueSerializer(Serializers.Utf8).Build())
             {
                 try

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Kafka.Example.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -15,6 +16,6 @@ namespace Kafka.Example.Services
             topic = configuration["Kafka:Topic"];
         }
 
-        public abstract void SendAsync(ResponseLog responseLog);
+        public abstract Task SendAsync(ResponseLog responseLog);
     }
 }

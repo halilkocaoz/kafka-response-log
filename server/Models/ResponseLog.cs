@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace Kafka.Example.Models
 {
@@ -18,8 +19,10 @@ namespace Kafka.Example.Models
         }
 
         public string Method { get; set; }
-        public long ElapsedTime { get; set; }
-        public string Message { get; private set; }
         public long Timestamp { get; set; }
+        public long ElapsedTime { get; set; }
+
+        [JsonIgnore]
+        public string Message { get; private set; }
     }
 }
