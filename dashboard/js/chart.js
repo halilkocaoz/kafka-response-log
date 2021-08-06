@@ -20,7 +20,7 @@ function drawChart() {
         title: { display: true, text: 'api/products', fontSize: 25 },
         tooltips: { mode: 'index', intersect: false },
         hover: { mode: 'nearest', intersect: true },
-        scales: { yAxes: [{ display: true, scaleLabel: { display: true, labelString: 'Elapsed time to response (milliseconds)', fontSize: 22, } }] }
+        scales: { yAxes: [{ display: true, scaleLabel: { display: true, labelString: 'Elapsed time to response (milliseconds)', fontSize: 22 } }] }
     };
     var chartConfig = { type: 'line', data: chartData, options: chartOptions };
     var canvas = document.getElementById("canvas").getContext('2d');
@@ -38,10 +38,12 @@ function updateChart() {
 
 function groupAverageByTimestamp(data) {
     var newData = [];
+    var averageElapsedTime, totalItemCountInSameTimestamp, totalElapsedTimeInSameTimestamp;
+    
     for (let firstIndex = 0; firstIndex < data.length; firstIndex++) {
         const firstElement = data[firstIndex];
-        var totalItemCountInSameTimestamp = 1;
-        var totalElapsedTime = firstElement.elapsedTime;
+        totalItemCountInSameTimestamp = 1;
+        totalElapsedTimeInSameTimestamp = first.elapsedTime;
 
         let searchIndex;
         var reachingTheEndCount = 0;
@@ -52,7 +54,7 @@ function groupAverageByTimestamp(data) {
 
             if (inSameTimestamp) {
                 totalItemCountInSameTimestamp++;
-                totalElapsedTime += searchElement.elapsedTime;
+                totalElapsedTimeInSameTimestamp += searchElement.elapsedTime;
             }
             else {
                 firstIndex = searchIndex - 1;
@@ -63,13 +65,13 @@ function groupAverageByTimestamp(data) {
         if (searchIndex === data.length) {
             reachingTheEndCount++;
         }
-
         if (reachingTheEndCount >= 2) {
             break;
-        } else {
-            firstElement.elapsedTime = totalElapsedTime / totalItemCountInSameTimestamp;
-            newData.push(firstElement);
         }
+
+        averageElapsedTime = totalElapsedTimeInSameTimestamp / totalItemCountInSameTimestamp;
+        firstElement.elapsedTime = averageElapsedTime;
+        newData.push(firstElement);
     }
 
     return newData;
