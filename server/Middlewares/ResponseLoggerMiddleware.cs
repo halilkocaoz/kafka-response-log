@@ -19,9 +19,8 @@ namespace Kafka.Example.Middlewares
         public async Task Invoke(HttpContext httpContext, KafkaLogService kafkaLogService, FileLogService fileLogService)
         {
             await _next(httpContext);
-            
             /// <see cref="TimeTracker"/>
-            
+
             var timeBeforeProcessEndpoint = httpContext.Items["timeBeforeProcessEndpoint"] != null
             ? (long)httpContext.Items["timeBeforeProcessEndpoint"]
             : default;
@@ -30,12 +29,12 @@ namespace Kafka.Example.Middlewares
             {
                 var timeAfterProcessEndpoint = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 var elapsedTime = timeAfterProcessEndpoint - timeBeforeProcessEndpoint;
+                var responseLogMessage = $"{httpContext.Request.Method} {elapsedTime} {DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}".ToUpper();
 
-                var responseLog = new ResponseLog(httpContext.Request.Method, elapsedTime);
 
                 #pragma warning disable CS4014
-                kafkaLogService.SendAsync(responseLog);
-                fileLogService.SendAsync(responseLog);
+                kafkaLogService.SendAsync(responseLogMessage);
+                fileLogService.SendAsync(responseLogMessage);
             }
         }
     }

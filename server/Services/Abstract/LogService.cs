@@ -16,6 +16,6 @@ namespace Kafka.Example.Services
             topic = configuration["Kafka:Topic"];
         }
 
-        public abstract Task SendAsync(ResponseLog responseLog);
+        public abstract Task SendAsync(string responseLogMessage);
     }
 }

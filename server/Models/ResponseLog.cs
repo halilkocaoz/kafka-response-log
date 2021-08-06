@@ -1,13 +1,7 @@
-using System;
-using System.Text.Json.Serialization;
-
 namespace Kafka.Example.Models
 {
     public class ResponseLog
     {
-        public ResponseLog(string method, long elapsedTime) =>
-            Message = $"{method} {elapsedTime} {DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}".ToUpper();
-        
         public ResponseLog(string method, long elapsedTime, long timestamp)
         {
             Method = method;
@@ -18,8 +12,5 @@ namespace Kafka.Example.Models
         public string Method { get; set; }
         public long Timestamp { get; set; }
         public long ElapsedTime { get; set; }
-
-        [JsonIgnore]
-        public string Message { get; private set; }
     }
 }

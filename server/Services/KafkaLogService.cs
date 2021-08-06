@@ -8,28 +8,28 @@ namespace Kafka.Example.Services
 {
     public class KafkaLogService : LogService
     {
-        private readonly static ProducerConfig producerConfig = new ProducerConfig
-        {
-            BootstrapServers = "kafka:9092",
-            MessageTimeoutMs = 1000,
-            Acks = Acks.None
-        };
-        private static Message<string, string> message;
+        private readonly ProducerConfig producerConfig;
 
         public KafkaLogService(ILogger<KafkaLogService> logger, IConfiguration configuration) : base(logger, configuration)
         {
+            producerConfig = new ProducerConfig
+            {
+                BootstrapServers = configuration["kafka:server"],
+                MessageTimeoutMs = 1000,
+                Acks = Acks.None
+            };
         }
 
-        public override async Task SendAsync(ResponseLog responseLog)
+        public override async Task SendAsync(string responseLogMessage)
         {
-            message = new Message<string, string> { Value = responseLog.Message };
+            Message<string, string> message = new Message<string, string> { Value = responseLogMessage };
 
             using (var producer = new ProducerBuilder<string, string>(producerConfig).SetValueSerializer(Serializers.Utf8).Build())
             {
                 try
                 {
                     await producer.ProduceAsync(topic, message);
-                    _logger.LogInformation($"{responseLog.Message} has been sent to {topic} topic.");
+                    _logger.LogInformation($"{responseLogMessage} has been sent to {topic} topic.");
                 }
                 catch (KafkaException e)
                 {

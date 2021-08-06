@@ -26,13 +26,13 @@ namespace Kafka.Example.Services
             }
         }
         
-        public override async Task SendAsync(ResponseLog responseLog)
+        public override async Task SendAsync(string responseLogMessage)
         {
             using (var writer = new StreamWriter(logFilePath, true))
             {
-                await writer.WriteLineAsync(responseLog.Message);
+                await writer.WriteLineAsync(responseLogMessage);
             }
-            _logger.LogInformation($"{responseLog.Message} has been written to {logFilePath} file.");
+            _logger.LogInformation($"{responseLogMessage} has been written to {logFilePath} file.");
         }
     }
 }
