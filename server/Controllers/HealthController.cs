@@ -22,9 +22,10 @@ namespace Kafka.Example.Controllers
         public async Task<IActionResult> ProductsHealth()
         {
             await npgsqlConnection.OpenAsync();
-            var oneHourAgo = DateTimeOffset.UtcNow.AddHours(-1).ToUnixTimeSeconds();
+            var oneHourAgo = DateTimeOffset.UtcNow.AddHours(-1).ToUnixTimeMilliseconds();
 
-            await using (var cmd = new NpgsqlCommand($"select * from net_logs where timestamp >= {oneHourAgo} order by timestamp", npgsqlConnection))
+            await using (var cmd = new NpgsqlCommand(
+                $"SELECT * FROM net_logs WHERE timestamp >= {oneHourAgo} ORDER BY timestamp", npgsqlConnection))
             await using (var reader = await cmd.ExecuteReaderAsync()) while (await reader.ReadAsync())
             {
                 logs.Add(new ResponseLog(reader.GetString(0), reader.GetInt64(1), reader.GetInt64(2)));

@@ -43,7 +43,7 @@ function groupAverageByTimestamp(data) {
     for (let firstIndex = 0; firstIndex < data.length; firstIndex++) {
         const firstElement = data[firstIndex];
         totalItemCountInSameTimestamp = 1;
-        totalElapsedTimeInSameTimestamp = first.elapsedTime;
+        totalElapsedTimeInSameTimestamp = firstElement.elapsedTime;
 
         let searchIndex;
         var reachingTheEndCount = 0;

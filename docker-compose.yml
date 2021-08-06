@@ -29,7 +29,7 @@ services:
     healthcheck:
       test: "/usr/bin/kafka-topics --list --zookeeper zookeeper:2181"
     ports:
-      - "19092:19092"
+      - "19092:9092"
     restart: always
     environment:
       KAFKA_BROKER_ID: 1
